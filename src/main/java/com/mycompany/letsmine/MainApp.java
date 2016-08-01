@@ -5,32 +5,28 @@
  */
 package com.mycompany.letsmine;
 
+import com.mycompany.letsmine.config.SpringMongoConfig;
 import com.mycompany.letsmine.geoCode.AddressConverter;
 import com.mycompany.letsmine.geoCode.GoogleResponse;
 import com.mycompany.letsmine.geoCode.Result;
+import com.mycompany.letsmine.model.User;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.social.twitter.api.FilterStreamParameters;
-import org.springframework.social.twitter.api.GeoCode;
-import org.springframework.social.twitter.api.SearchOperations;
 import org.springframework.social.twitter.api.SearchParameters;
 import org.springframework.social.twitter.api.SearchResults;
-import org.springframework.social.twitter.api.Stream;
-import org.springframework.social.twitter.api.StreamDeleteEvent;
-import org.springframework.social.twitter.api.StreamListener;
-import org.springframework.social.twitter.api.StreamWarningEvent;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.api.TwitterProfile;
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 /**
  *
  * @author michaelfouche
@@ -41,6 +37,42 @@ public class MainApp {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 
         HelloWorld hwObj = (HelloWorld) context.getBean("helloWorld");
+        
+        ApplicationContext ctx = 
+             new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+        
+        MongoOperations mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");
+        User user = new User("mkyong", "password123");
+        
+        // save
+	mongoOperation.save(user);
+        
+        // now user object got the created id.
+	System.out.println("1. user : " + user);
+        
+        // query to search user
+	Query searchUserQuery = new Query(Criteria.where("username").is("mkyong"));
+        
+        // find the saved user again.
+	User savedUser = mongoOperation.findOne(searchUserQuery, User.class);
+	System.out.println("2. find - savedUser : " + savedUser);
+        
+        // update password
+	mongoOperation.updateFirst(searchUserQuery, 
+                         Update.update("password", "new password"),User.class);
+        
+        // find the updated user object
+	User updatedUser = mongoOperation.findOne(searchUserQuery, User.class);
+        System.out.println("3. updatedUser : " + updatedUser);
+        
+        // delete
+	mongoOperation.remove(searchUserQuery, User.class);
+
+	// List, it should be empty now.
+	List<User> listUser = mongoOperation.findAll(User.class);
+	System.out.println("4. Number of user = " + listUser.size());
+        
+        
         
         //START OF LOCATION
         
@@ -103,26 +135,52 @@ public class MainApp {
         for (Tweet element : tweetList) {
             System.out.println("\tRT:"+element.isRetweet()+"|From:"+element.getFromUser()+"|Date:"+element.getCreatedAt()+" |Tweet: "+element.getText());
         }*/
-        
+        String tweetID = "760118695037403136";//need to populate data since it's only a week old
         SearchResults resultsAdv = twitter.searchOperations().search(new SearchParameters("#5FM")
-        .geoCode(new GeoCode(Double.parseDouble(lat), Double.parseDouble(lng), 1300, GeoCode.Unit.KILOMETER))
+        //.geoCode(new GeoCode(Double.parseDouble(lat), Double.parseDouble(lng), 150, GeoCode.Unit.KILOMETER))
         //.lang("af")
-        //.resultType(SearchParameters.ResultType.RECENT)
-        .count(100)
-        //.includeEntities(false)
+        //.resultType(SearchParameters.ResultType.MIXED)//mixed recent popular
+        .count(20)//max 100,default 15
+        //.until(untilDate)
+        .includeEntities(true)//media, urls, user mentions, hashtags, symbols
+        //.maxId(Long.parseLong(tweetID))
+        //.sinceId(Long.parseLong(tweetID))
         );
         
         System.out.println("\n--------------\n");
         List<Tweet> tweetListAdv = resultsAdv.getTweets();
         for (Tweet element : tweetListAdv) {
             System.out.println("\t"
-                    +"RT:"      +element.isRetweet()
-                    +"|"        +element.getRetweetCount()
+                    +"|ID:"     +element.getIdStr()
+                    +"|"        +element.getId()
                     +"|"        +element.getExtraData()
                     +"|From:"   +element.getFromUser()
+                    +"|"        +element.getFromUserId()
+                    +"|"        +element.getInReplyToStatusId()
+                    +"|"        +element.getInReplyToUserId()
+                    +"|"        +element.getUser()
                     +"|Date:"   +element.getCreatedAt()
                     +"|Lang:"   +element.getLanguageCode()
-                    +"|Tweet:"  +element.getText());
+                    +"|Tweet:"  +element.getText()
+                    +"|"        +element.getInReplyToScreenName()
+                    +"|"        +element.getProfileImageUrl()
+                    +"|"        +element.getSource()
+                    +"|UnmodifiedText"      +element.getUnmodifiedText()
+                    +"|"        +element.getEntities()
+                    +"|"        +element.getFavoriteCount()
+                    +"|"        +element.hasMedia()
+                    +"|"        +element.hasMentions()
+                    +"|"        +element.hasTags()
+                    +"|"        +element.hasUrls()
+                    +"|"        +element.hashCode()
+                    +"|"        +element.isFavorited()
+                    +"|"        +element.isRetweeted()  
+                    +"RT:"      +element.isRetweet()
+                    +"|"        +element.getRetweetCount()
+            );
+            
+                    
+            
             
         }
         
