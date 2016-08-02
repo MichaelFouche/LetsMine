@@ -39,43 +39,40 @@ public class MainApp {
 
         HelloWorld hwObj = (HelloWorld) context.getBean("helloWorld");
         
-        ApplicationContext ctx = 
-             new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+        TwitterCollector tc = (TwitterCollector) context.getBean("TwitterCollector");
+        tc.retrieveTweet("Takealot");
         
-        MongoOperations mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");
-        User user = new User("mkyong", "password123");
         
-        // save
-	mongoOperation.save(user);
         
-        // now user object got the created id.
-	System.out.println("1. user : " + user);
         
-        // query to search user
-	Query searchUserQuery = new Query(Criteria.where("username").is("mkyong"));
         
-        // find the saved user again.
-	User savedUser = mongoOperation.findOne(searchUserQuery, User.class);
-	System.out.println("2. find - savedUser : " + savedUser);
+       // hwObj.getMessage();
+      
         
-        // update password
-	mongoOperation.updateFirst(searchUserQuery, 
-                         Update.update("password", "new password"),User.class);
+            
+            //ANALYTICS
+            //read the db collection
+            //select the tweets related to the analytics query     
+            //manipulate
+            //store in collection
+            
+            //CLOUD TAG
+            //Read from analytics collection
+            //generate the cloudtag
+            
+            
+        }
         
-        // find the updated user object
-	User updatedUser = mongoOperation.findOne(searchUserQuery, User.class);
-        System.out.println("3. updatedUser : " + updatedUser);
         
-        // delete
-	mongoOperation.remove(searchUserQuery, User.class);
+        
+        
+   
+    
+   
+}
 
-	// List, it should be empty now.
-	List<User> listUser = mongoOperation.findAll(User.class);
-	System.out.println("4. Number of user = " + listUser.size());
-        
-        
-        
-        //START OF LOCATION
+/*//START OF LOCATION
+        //enter location in text and receive lat & long
         
         String lat = "";
         String lng = "";
@@ -112,119 +109,47 @@ public class MainApp {
         System.out.println(res1.getStatus());
        }
         //END OF LOCATION
-        
-        
-        hwObj.getMessage();
-      
-        String consumerKey = "hAdjsGaCHIxVlxmkh3kwu3v3D"; // The application's consumer key
-        String consumerSecret = "vr8RwBl5Ry42gnReysvGYTMJtr2kmMkcMFgype7ih1jAnnCVn0"; // The application's consumer secret
-        String accessToken = "53678997-qI0CgAlJNf4vbukF5g7nna9E50EV5BLiEop3iPpZ2"; // The access token granted after OAuth authorization
-        String accessTokenSecret = "4uXUK3Lq7X4a02HjuNAiBcO1p4hSJGtDaiwgSG4BkYaAc"; // The access token secret granted after OAuth authorization
-        Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
+        */
 
-        TwitterProfile profile = twitter.userOperations().getUserProfile();
-        String profileId = twitter.userOperations().getScreenName();
+
+
+
+/*//MONGODB
+        //Connect to database and test CRUD
+        ApplicationContext ctx = 
+             new AnnotationConfigApplicationContext(SpringMongoConfig.class);
         
-        System.out.println("Name: " + profile.getName());
-        System.out.println("" + profile.getProfileUrl());
+        MongoOperations mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");
+        User user = new User("mkyong", "password123");
         
-        //SearchResults results = twitter.searchOperations().search(profileId, 0);
-        
-        
-        /*SearchResults results = twitter.searchOperations().search("#HIMYM", 25);
-        List<Tweet> tweetList = results.getTweets();
-        for (Tweet element : tweetList) {
-            System.out.println("\tRT:"+element.isRetweet()+"|From:"+element.getFromUser()+"|Date:"+element.getCreatedAt()+" |Tweet: "+element.getText());
-        }*/
-        String tweetID = "760118695037403136";//need to populate data since it's only a week old
-        SearchResults resultsAdv = twitter.searchOperations().search(new SearchParameters("#5FM")
-        //.geoCode(new GeoCode(Double.parseDouble(lat), Double.parseDouble(lng), 150, GeoCode.Unit.KILOMETER))
-        //.lang("af")
-        //.resultType(SearchParameters.ResultType.MIXED)//mixed recent popular
-        .count(20)//max 100,default 15
-        //.until(untilDate)
-        .includeEntities(true)//media, urls, user mentions, hashtags, symbols
-        //.maxId(Long.parseLong(tweetID))
-        //.sinceId(Long.parseLong(tweetID))
-        );
-        
-        System.out.println("\n--------------\n");
-        List<Tweet> tweetListAdv = resultsAdv.getTweets();
-        for (Tweet element : tweetListAdv) {
-            
-            TweetData tweetData = new TweetData(
-                    element.getId(),
-                    profile.getName(),
-                    element.getFromUser(),
-                    element.getFromUserId(),
-                    element.getInReplyToStatusId(),
-                    element.getInReplyToUserId(),
-                    element.getUser(),
-                    element.getCreatedAt(),
-                    element.getLanguageCode(),
-                    element.getText(),
-                    element.getInReplyToScreenName(),
-                    element.getProfileImageUrl(),
-                    element.getSource(),
-                    element.getUnmodifiedText(),
-                    element.getEntities(),
-                    element.getFavoriteCount(),
-                    element.hasMedia(),
-                    element.hasMentions(),
-                    element.hasTags(),
-                    element.hasUrls(),
-                    element.hashCode(),
-                    element.isFavorited(),
-                    element.isRetweeted(),
-                    element.isRetweet(),
-                    element.getRetweetCount()
-            );
-       
-       
         // save
-	mongoOperation.save(tweetData);
-            System.out.println("\t"
-                    +"|ID:"     +element.getIdStr()
-                    +"|"        +element.getId()
-                    +"|"        +element.getExtraData()
-                    +"|From:"   +element.getFromUser()
-                    +"|"        +element.getFromUserId()
-                    +"|"        +element.getInReplyToStatusId()
-                    +"|"        +element.getInReplyToUserId()
-                    +"|"        +element.getUser()
-                    +"|Date:"   +element.getCreatedAt()
-                    +"|Lang:"   +element.getLanguageCode()
-                    +"|Tweet:"  +element.getText()
-                    +"|"        +element.getInReplyToScreenName()
-                    +"|"        +element.getProfileImageUrl()
-                    +"|"        +element.getSource()
-                    +"|UnmodifiedText"      +element.getUnmodifiedText()
-                    +"|"        +element.getEntities()
-                    +"|"        +element.getFavoriteCount()
-                    +"|"        +element.hasMedia()
-                    +"|"        +element.hasMentions()
-                    +"|"        +element.hasTags()
-                    +"|"        +element.hasUrls()
-                    +"|"        +element.hashCode()
-                    +"|"        +element.isFavorited()
-                    +"|"        +element.isRetweeted()  
-                    +"RT:"      +element.isRetweet()
-                    +"|"        +element.getRetweetCount()
-            );
-            
-                    
-            
-            
-        }
+	mongoOperation.save(user);
         
+        // now user object got the created id.
+	System.out.println("1. user : " + user);
         
+        // query to search user
+	Query searchUserQuery = new Query(Criteria.where("username").is("mkyong"));
         
+        // find the saved user again.
+	User savedUser = mongoOperation.findOne(searchUserQuery, User.class);
+	System.out.println("2. find - savedUser : " + savedUser);
         
-   
-    }
-   
-}
+        // update password
+	mongoOperation.updateFirst(searchUserQuery, 
+                         Update.update("password", "new password"),User.class);
+        
+        // find the updated user object
+	User updatedUser = mongoOperation.findOne(searchUserQuery, User.class);
+        System.out.println("3. updatedUser : " + updatedUser);
+        
+        // delete
+	mongoOperation.remove(searchUserQuery, User.class);
 
+	// List, it should be empty now.
+	List<User> listUser = mongoOperation.findAll(User.class);
+	System.out.println("4. Number of user = " + listUser.size());
+        */
 
 /* 
 http://docs.spring.io/spring-social-twitter/docs/1.0.5.RELEASE/reference/html/apis.html

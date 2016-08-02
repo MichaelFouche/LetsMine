@@ -18,6 +18,12 @@
        <property name="message" value="Hello World!"/>
    </bean>
    
+   <bean id="TwitterCollector" class="com.mycompany.letsmine.TwitterCollector">
+       <property name="consumerKey" value="hAdjsGaCHIxVlxmkh3kwu3v3D"/>
+       <property name="consumerSecret" value="vr8RwBl5Ry42gnReysvGYTMJtr2kmMkcMFgype7ih1jAnnCVn0"/>
+       <property name="accessToken" value="53678997-qI0CgAlJNf4vbukF5g7nna9E50EV5BLiEop3iPpZ2"/>
+       <property name="accessTokenSecret" value="4uXUK3Lq7X4a02HjuNAiBcO1p4hSJGtDaiwgSG4BkYaAc"/>
+   </bean>
 
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
             <constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
