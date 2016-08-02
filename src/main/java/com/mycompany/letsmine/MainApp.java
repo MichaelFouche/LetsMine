@@ -9,6 +9,7 @@ import com.mycompany.letsmine.config.SpringMongoConfig;
 import com.mycompany.letsmine.geoCode.AddressConverter;
 import com.mycompany.letsmine.geoCode.GoogleResponse;
 import com.mycompany.letsmine.geoCode.Result;
+import com.mycompany.letsmine.model.TweetData;
 import com.mycompany.letsmine.model.User;
 import java.io.IOException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -150,6 +151,38 @@ public class MainApp {
         System.out.println("\n--------------\n");
         List<Tweet> tweetListAdv = resultsAdv.getTweets();
         for (Tweet element : tweetListAdv) {
+            
+            TweetData tweetData = new TweetData(
+                    element.getId(),
+                    profile.getName(),
+                    element.getFromUser(),
+                    element.getFromUserId(),
+                    element.getInReplyToStatusId(),
+                    element.getInReplyToUserId(),
+                    element.getUser(),
+                    element.getCreatedAt(),
+                    element.getLanguageCode(),
+                    element.getText(),
+                    element.getInReplyToScreenName(),
+                    element.getProfileImageUrl(),
+                    element.getSource(),
+                    element.getUnmodifiedText(),
+                    element.getEntities(),
+                    element.getFavoriteCount(),
+                    element.hasMedia(),
+                    element.hasMentions(),
+                    element.hasTags(),
+                    element.hasUrls(),
+                    element.hashCode(),
+                    element.isFavorited(),
+                    element.isRetweeted(),
+                    element.isRetweet(),
+                    element.getRetweetCount()
+            );
+       
+       
+        // save
+	mongoOperation.save(tweetData);
             System.out.println("\t"
                     +"|ID:"     +element.getIdStr()
                     +"|"        +element.getId()
