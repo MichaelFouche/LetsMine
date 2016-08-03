@@ -69,7 +69,11 @@
                 <artifactId>spring-aop</artifactId>
                 <version>4.3.2.RELEASE</version>
         </dependency>
-
+        <dependency> 
+            <groupId>javax.servlet</groupId> 
+            <artifactId>jstl</artifactId> 
+            <version>1.2</version> 
+        </dependency> 
         <!-- The spring-webmvc module (also known as the Web-Servlet module) contains 
                 Spring’s model-view-controller (MVC) and REST Web Services implementation 
                 for web applications -->
@@ -99,8 +103,63 @@
                             <target>1.8</target>
                     </configuration>
             </plugin>
-           
+<!--            <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.1.1</version>
+                    <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                             <webXml>src\main\webapp\WEB-INF\web.xml</webxml> 
+                    </configuration>
+            </plugin>-->
+            
+            
+<!--            <plugin>
+                        <groupId>org.glassfish.maven.plugin</groupId>
+                        <artifactId>maven-glassfish-plugin</artifactId>
+                        <version>2.1</version>
+                        <configuration>
+                        <glassfishDirectory>${local.glassfish.home}</glassfishDirectory>
+                                <user>admin</user>
+                                <passwordFile>${local.glassfish.passfile}</passwordFile>
+                                <domain>
+                                        <name>domain1</name>
+                                        <httpPort>8080</httpPort>
+                                        <adminPort>4848</adminPort>
+                                </domain>
+                                <components>
+                                        <component>
+                                                <name>${project.artifactId}</name>
+                                <artifact>target/${project.build.finalName}.war</artifact>
+                                        </component>
+                                </components>
+                                <debug>true</debug>
+                                <terse>false</terse>
+                                <echo>true</echo>
+                        </configuration>
+                </plugin>-->
+
+<!--           <plugin>
+                <groupId>org.glassfish</groupId>
+                <artifactId>maven-embedded-glassfish-plugin</artifactId>
+                <version>3.0-74b</version>
+                <configuration>
+                  <goalPrefix>embedded-glassfish</goalPrefix>
+                  <app>test.war</app>
+                  <port>8080</port> 
+                  <contextRoot>test</contextRoot> 
+                  <autoDelete>true</autoDelete>
+                  <glassfishDirectory>/opt/apache-tomcat-9.0.0.M9</glassfishDirectory>
+               </configuration>
+               <executions>
+                  <execution>
+                     <phase>install</phase>
+                     <goals>
+                            <goal>run</goal>
+                     </goals>
+                  </execution>
+               </executions>
+            </plugin>-->
         </plugins>
     </build>
-
 </project>

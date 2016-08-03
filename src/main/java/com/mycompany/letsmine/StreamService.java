@@ -53,7 +53,7 @@ public class StreamService {
 
             @Override
             public void onLimit(int numberOfLimitedTweets) {
-                // TODO Auto-generated method stub
+                System.out.println("");
 
             }
 

@@ -14,9 +14,6 @@
     <mongo:db-factory dbname="LetsMine" />
     
     
-   <bean id="helloWorld" class="com.mycompany.letsmine.HelloWorld">
-       <property name="message" value="Hello World!"/>
-   </bean>
    
    <bean id="TwitterCollector" class="com.mycompany.letsmine.TwitterCollector">
        <property name="consumerKey" value="hAdjsGaCHIxVlxmkh3kwu3v3D"/>
@@ -29,15 +26,5 @@
             <constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
     </bean>
     
-   <bean id="connectionFactoryLocator" class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
-    <property name="connectionFactories">
-        <list>
-            <bean class="org.springframework.social.twitter.connect.TwitterConnectionFactory">
-                <constructor-arg value="${twitter.consumerKey}" />
-                <constructor-arg value="${twitter.consumerSecret}" />				
-            </bean>
-        </list>
-    </property>
-</bean>
 
 </beans>

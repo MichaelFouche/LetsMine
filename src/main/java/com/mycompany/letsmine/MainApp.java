@@ -11,7 +11,9 @@ import com.mycompany.letsmine.geoCode.GoogleResponse;
 import com.mycompany.letsmine.geoCode.Result;
 import com.mycompany.letsmine.model.TweetData;
 import com.mycompany.letsmine.model.User;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.social.twitter.api.SearchParameters;
 import org.springframework.social.twitter.api.SearchResults;
@@ -37,17 +39,11 @@ public class MainApp {
     public static void main(String[] args) throws IOException {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 
-        HelloWorld hwObj = (HelloWorld) context.getBean("helloWorld");
-        
         TwitterCollector tc = (TwitterCollector) context.getBean("TwitterCollector");
         tc.retrieveTweet("Takealot");
         
         
         
-        
-        
-       // hwObj.getMessage();
-      
         
             
             //ANALYTICS
