@@ -35,7 +35,9 @@ public class TweetDataController {
     public ModelAndView helloWorld() {
 
             String message = "<br><div style='text-align:center;'>"
-                            + "<h3>********** Hello World, Spring MVC</h3>This message is coming from TweetDataController.java **********</div><br><br>";
+                            + "<h3>Lets Mine</h3>"
+                            + "<p>Put Twitter data here <<-->></p>"
+                            + "</div><br><br>";
             return new ModelAndView("welcome", "message", message);
     }
     /*

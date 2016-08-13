@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Spring MVC Tutorial Series by Crunchify.com</title>
+<title>LetsMine</title>
 <style type="text/css">
 body {
 	background-image: url('https://crunchify.com/bg.png');
@@ -19,11 +19,10 @@ body {
 	<br>
 	<div style="text-align:center">
 		<h2>
-			Hey You..!!! <br> <br>
+			Welcome <br> <br>
 		</h2>
 		<h3>
-			<a href="welcome.html">Click here to See Welcome Message... </a>(to
-			check Spring MVC Controller... @RequestMapping("/welcome"))
+			<a href="welcome.html">Lets Mine --> </a>
 		</h3>
 	</div>
 </body>
