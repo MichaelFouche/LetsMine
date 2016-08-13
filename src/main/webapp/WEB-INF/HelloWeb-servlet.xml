@@ -16,5 +16,12 @@
                  <property name="prefix" value="/WEB-INF/jsp/" /> 
                  <property name="suffix" value=".jsp" /> 
              </bean>
-              <bean id="TweetDataService" class="com.mycompany.letsmine.service.impl.TweetDataServiceImpl"/>  
+             
+<!--             
+              <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+                <property name="prefix" value="/WEB-INF/jsp/" />
+                <property name="suffix" value=".jsp" />
+             </bean>
+             
+             <bean id="TweetDataService" class="com.mycompany.letsmine.service.impl.TweetDataServiceImpl"/>  -->
          </beans> 
