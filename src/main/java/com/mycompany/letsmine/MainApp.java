@@ -11,7 +11,6 @@ import com.mycompany.letsmine.model.User;
 import java.io.IOException;
 import java.util.List;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -28,6 +27,9 @@ public class MainApp {
 
 //        TwitterCollector tc = (TwitterCollector) context.getBean("TwitterCollector");
 //        tc.retrieveTweet("Takealot");
+
+
+
          
         ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);         
         MongoOperations mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");
@@ -48,7 +50,7 @@ public class MainApp {
         
         
         
-        
+        //TODO: 
         
         
         

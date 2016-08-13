@@ -14,6 +14,9 @@
              <div class="page-header"> 
                  <h1>LetsMine - MongoDB Tweets</h1> 
              </div> 
+             <a href="/LetsMine">Home ||</a>
+             <a href="/LetsMine/myRequests.html">Show current database ||</a>
+             <a href="/LetsMine/tagCloud.html">Tag Cloud</a>
              <div class="row"> 
                  <ul class="nav nav-tabs"> 
                      <li role="presentation" class="active"><a href="#">Retrieved Tweets</a></li> 

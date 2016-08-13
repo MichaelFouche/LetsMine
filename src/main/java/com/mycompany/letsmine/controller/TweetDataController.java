@@ -55,6 +55,25 @@ public class TweetDataController {
                             + "</div><br><br>";
             return new ModelAndView("welcome", "message", message);
     }
+    
+    @RequestMapping(value = "/tweetCollect", method = RequestMethod.GET)    
+    public String getTweetCollectView(Model model){ 
+        doTweetCollector("Takealot");
+        return "tweetCollect";
+    }
+    
+    @RequestMapping(value = "/tagCloud", method = RequestMethod.GET)    
+    public String getTagCloudView(Model model){ 
+        return "tagCloud";
+    }
+    
+    
+    public void doTweetCollector(String query){ 
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        TwitterCollector tc = (TwitterCollector) context.getBean("TwitterCollector");
+        tc.retrieveTweet(query);
+    }
+    
     /*
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String printHello(ModelMap model) {

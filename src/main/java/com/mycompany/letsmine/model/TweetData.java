@@ -45,13 +45,16 @@ public class TweetData {
     private Boolean isRetweeted;
     private Boolean isRetweet;
     private int RetweetCount;
+    
+    private String letsMineUser;
+    private String searchQuery;
 
     
      public TweetData() {
         //hibernate
     }
     
-    public TweetData(Long tweetId, String LoggedInUser, String FromUser, Long FromUserId, Long InReplyToStatusId, Long InReplyToUserId, TwitterProfile User, Date CreatedAt, String LanguageCode, String Text, String InReplyToScreenName, String ProfileImageUrl, String Source, String UnmodifiedText/*, Entities entities*/, int FavoriteCount, Boolean hasMedia, Boolean hasMentions, Boolean hasTags, Boolean hasUrls, int hashCode, Boolean isFavorited, Boolean isRetweeted, Boolean isRetweet, int RetweetCount) {
+    public TweetData(Long tweetId, String LoggedInUser, String FromUser, Long FromUserId, Long InReplyToStatusId, Long InReplyToUserId, TwitterProfile User, Date CreatedAt, String LanguageCode, String Text, String InReplyToScreenName, String ProfileImageUrl, String Source, String UnmodifiedText/*, Entities entities*/, int FavoriteCount, Boolean hasMedia, Boolean hasMentions, Boolean hasTags, Boolean hasUrls, int hashCode, Boolean isFavorited, Boolean isRetweeted, Boolean isRetweet, int RetweetCount,String letsMineUser, String searchQuery) {
         this.tweetId = tweetId;
         this.LoggedInUser = LoggedInUser;
         this.FromUser = FromUser;
@@ -77,6 +80,8 @@ public class TweetData {
         this.isRetweeted = isRetweeted;
         this.isRetweet = isRetweet;
         this.RetweetCount = RetweetCount;
+        this.letsMineUser = letsMineUser;
+        this.searchQuery = searchQuery;
     }
     
     public String getLoggedInUser() {

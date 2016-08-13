@@ -148,9 +148,10 @@ public class TwitterCollector {
                 element.isFavorited(),
                 element.isRetweeted(),
                 element.isRetweet(),
-                element.getRetweetCount()
+                element.getRetweetCount(),
+                profile.getName(),
+                hashtag
         );
-
 
     // save
     mongoOperation.save(tweetData);
