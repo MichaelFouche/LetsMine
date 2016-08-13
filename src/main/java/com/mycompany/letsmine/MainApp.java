@@ -5,31 +5,10 @@
  */
 package com.mycompany.letsmine;
 
-import com.mycompany.letsmine.config.SpringMongoConfig;
-import com.mycompany.letsmine.geoCode.AddressConverter;
-import com.mycompany.letsmine.geoCode.GoogleResponse;
-import com.mycompany.letsmine.geoCode.Result;
-import com.mycompany.letsmine.model.TweetData;
-import com.mycompany.letsmine.model.User;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.social.twitter.api.SearchParameters;
-import org.springframework.social.twitter.api.SearchResults;
-import org.springframework.social.twitter.api.Tweet;
-import org.springframework.social.twitter.api.Twitter;
-import org.springframework.social.twitter.api.TwitterProfile;
-import org.springframework.social.twitter.api.impl.TwitterTemplate;
-
-import java.util.List;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 /**
  *
  * @author michaelfouche

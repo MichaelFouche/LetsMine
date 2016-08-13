@@ -25,9 +25,7 @@ import org.springframework.ui.Model;
  */
 @Service
 public class StreamService {
-
-
-    @Autowired
+    
     private Twitter twitter;
 
     public Model streamApi(Model model, int time) throws InterruptedException{

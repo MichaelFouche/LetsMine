@@ -11,6 +11,7 @@ import com.mycompany.letsmine.service.TweetDataService;
 import javax.annotation.Resource;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 /**
  *
  * @author michaelfouche
@@ -29,4 +30,12 @@ public class TweetDataController {
         model.addAttribute(MY_REQUESTS_MODEL_ATTRIBUTE, tweetDataService.getAllTweets()); 
         return MY_REQUESTS_VIEW; 
     } 
+    
+    @RequestMapping("/welcome")
+    public ModelAndView helloWorld() {
+
+            String message = "<br><div style='text-align:center;'>"
+                            + "<h3>********** Hello World, Spring MVC</h3>This message is coming from TweetDataController.java **********</div><br><br>";
+            return new ModelAndView("welcome", "message", message);
+    }
 }
