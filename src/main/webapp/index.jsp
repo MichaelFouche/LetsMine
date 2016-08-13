@@ -22,7 +22,7 @@ body {
 			Welcome <br> <br>
 		</h2>
 		<h3>
-			<a href="welcome.html">Lets Mine --> </a>
+			<a href="myRequests.html">Show current database --> </a>
 		</h3>
 	</div>
 </body>

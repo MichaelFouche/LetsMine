@@ -40,13 +40,10 @@ public class TwitterCollector {
         //Connect to database and test CRUD
         ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
         mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");
-        user = new User("mkyong", "password123");
+        //user = new User("mkyong", "password123");
         //setKeys("hAdjsGaCHIxVlxmkh3kwu3v3D","vr8RwBl5Ry42gnReysvGYTMJtr2kmMkcMFgype7ih1jAnnCVn0", "53678997-qI0CgAlJNf4vbukF5g7nna9E50EV5BLiEop3iPpZ2","4uXUK3Lq7X4a02HjuNAiBcO1p4hSJGtDaiwgSG4BkYaAc" );
     
     }
-    
-
-    
     
     public String getConsumerKey() {
         return consumerKey;
@@ -141,7 +138,7 @@ public class TwitterCollector {
                 element.getProfileImageUrl(),
                 element.getSource(),
                 element.getUnmodifiedText(),
-                element.getEntities(),
+              //  element.getEntities(),
                 element.getFavoriteCount(),
                 element.hasMedia(),
                 element.hasMentions(),
@@ -157,35 +154,37 @@ public class TwitterCollector {
 
     // save
     mongoOperation.save(tweetData);
-        System.out.println("\t"
-                +"|ID:"     +element.getIdStr()
-               /* +"|"        +element.getId()
-                +"|"        +element.getExtraData()
-                +"|From:"   +element.getFromUser()
-                +"|"        +element.getFromUserId()
-                +"|"        +element.getInReplyToStatusId()
-                +"|"        +element.getInReplyToUserId()
-                +"|"        +element.getUser()
-                +"|Date:"   +element.getCreatedAt()
-                +"|Lang:"   +element.getLanguageCode()
-                +"|Tweet:"  +element.getText()
-                +"|"        +element.getInReplyToScreenName()
-                +"|"        +element.getProfileImageUrl()
-                +"|"        +element.getSource()*/
-                +"|UT"      +element.getUnmodifiedText()
-               /* +"|"        +element.getEntities()
-                +"|"        +element.getFavoriteCount()*/
-                +"|"        +element.hasMedia()
-                +"|"        +element.hasMentions()
-                +"|"        +element.hasTags()
-                +"|"        +element.hasUrls()
-                +"|"        +element.hashCode()
-                +"|"        +element.isFavorited()
-                +"|"        +element.isRetweeted()  
-                +"RT:"      +element.isRetweet()
-                +"|"        +element.getRetweetCount()
-        );
+    System.out.println("Saved to MongoDB");
+//        System.out.println("\t"
+//                +"|ID:"     +element.getIdStr()
+//               /* +"|"        +element.getId()
+//                +"|"        +element.getExtraData()
+//                +"|From:"   +element.getFromUser()
+//                +"|"        +element.getFromUserId()
+//                +"|"        +element.getInReplyToStatusId()
+//                +"|"        +element.getInReplyToUserId()
+//                +"|"        +element.getUser()
+//                +"|Date:"   +element.getCreatedAt()
+//                +"|Lang:"   +element.getLanguageCode()
+//                +"|Tweet:"  +element.getText()
+//                +"|"        +element.getInReplyToScreenName()
+//                +"|"        +element.getProfileImageUrl()
+//                +"|"        +element.getSource()*/
+//                +"|UT"      +element.getUnmodifiedText()
+//               /* +"|"        +element.getEntities()
+//                +"|"        +element.getFavoriteCount()*/
+//                +"|"        +element.hasMedia()
+//                +"|"        +element.hasMentions()
+//                +"|"        +element.hasTags()
+//                +"|"        +element.hasUrls()
+//                +"|"        +element.hashCode()
+//                +"|"        +element.isFavorited()
+//                +"|"        +element.isRetweeted()  
+//                +"RT:"      +element.isRetweet()
+//                +"|"        +element.getRetweetCount()
+//        );
    }
+    
    }      
     
 }

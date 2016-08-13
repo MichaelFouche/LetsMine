@@ -34,7 +34,7 @@ public class TweetData {
     private String ProfileImageUrl;
     private String Source;
     private String UnmodifiedText;
-    private Entities entities;
+   // private Entities entities;
     private int FavoriteCount;
     private Boolean hasMedia;
     private Boolean hasMentions;
@@ -46,7 +46,12 @@ public class TweetData {
     private Boolean isRetweet;
     private int RetweetCount;
 
-    public TweetData(Long tweetId, String LoggedInUser, String FromUser, Long FromUserId, Long InReplyToStatusId, Long InReplyToUserId, TwitterProfile User, Date CreatedAt, String LanguageCode, String Text, String InReplyToScreenName, String ProfileImageUrl, String Source, String UnmodifiedText, Entities entities, int FavoriteCount, Boolean hasMedia, Boolean hasMentions, Boolean hasTags, Boolean hasUrls, int hashCode, Boolean isFavorited, Boolean isRetweeted, Boolean isRetweet, int RetweetCount) {
+    
+     public TweetData() {
+        //hibernate
+    }
+    
+    public TweetData(Long tweetId, String LoggedInUser, String FromUser, Long FromUserId, Long InReplyToStatusId, Long InReplyToUserId, TwitterProfile User, Date CreatedAt, String LanguageCode, String Text, String InReplyToScreenName, String ProfileImageUrl, String Source, String UnmodifiedText/*, Entities entities*/, int FavoriteCount, Boolean hasMedia, Boolean hasMentions, Boolean hasTags, Boolean hasUrls, int hashCode, Boolean isFavorited, Boolean isRetweeted, Boolean isRetweet, int RetweetCount) {
         this.tweetId = tweetId;
         this.LoggedInUser = LoggedInUser;
         this.FromUser = FromUser;
@@ -61,7 +66,7 @@ public class TweetData {
         this.ProfileImageUrl = ProfileImageUrl;
         this.Source = Source;
         this.UnmodifiedText = UnmodifiedText;
-        this.entities = entities;
+      //  this.entities = entities;
         this.FavoriteCount = FavoriteCount;
         this.hasMedia = hasMedia;
         this.hasMentions = hasMentions;
@@ -73,14 +78,6 @@ public class TweetData {
         this.isRetweet = isRetweet;
         this.RetweetCount = RetweetCount;
     }
-
-       
-    
-    public TweetData() {
-    }
-
-    
-    
     
     public String getLoggedInUser() {
         return LoggedInUser;
@@ -194,13 +191,13 @@ public class TweetData {
         this.UnmodifiedText = UnmodifiedText;
     }
 
-    public Entities getEntities() {
+   /* public Entities getEntities() {
         return entities;
     }
 
     public void setEntities(Entities entities) {
         this.entities = entities;
-    }
+    }*/
 
     public int getFavoriteCount() {
         return FavoriteCount;
@@ -280,6 +277,11 @@ public class TweetData {
 
     public void setRetweetCount(int RetweetCount) {
         this.RetweetCount = RetweetCount;
+    }
+
+    @Override
+    public String toString() {
+        return "TweetData{" + "tweetId=" + tweetId + ", LoggedInUser=" + LoggedInUser + ", FromUser=" + FromUser + ", FromUserId=" + FromUserId + ", InReplyToStatusId=" + InReplyToStatusId + ", InReplyToUserId=" + InReplyToUserId + ", User=" + User + ", CreatedAt=" + CreatedAt + ", LanguageCode=" + LanguageCode + ", Text=" + Text + ", InReplyToScreenName=" + InReplyToScreenName + ", ProfileImageUrl=" + ProfileImageUrl + ", Source=" + Source + ", UnmodifiedText=" + UnmodifiedText /*+ ", entities=" + entities */+ ", FavoriteCount=" + FavoriteCount + ", hasMedia=" + hasMedia + ", hasMentions=" + hasMentions + ", hasTags=" + hasTags + ", hasUrls=" + hasUrls + ", hashCode=" + hashCode + ", isFavorited=" + isFavorited + ", isRetweeted=" + isRetweeted + ", isRetweet=" + isRetweet + ", RetweetCount=" + RetweetCount + '}';
     }
     
     

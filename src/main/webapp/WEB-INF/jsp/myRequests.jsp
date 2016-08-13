@@ -1,7 +1,7 @@
  <!DOCTYPE html> 
          <html lang="en"> 
          <head> 
-             <title>Purchase Requests</title> 
+             <title>MongoDB Tweets</title> 
              <meta name="viewport" content="width=device-width, initial-scale=1"> 
              <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" > 
              <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" ></script> 
@@ -12,30 +12,28 @@
          <body> 
          <div class="container-fluid"> 
              <div class="page-header"> 
-                 <h1>Purchase Requests</h1> 
+                 <h1>LetsMine - MongoDB Tweets</h1> 
              </div> 
              <div class="row"> 
                  <ul class="nav nav-tabs"> 
-                     <li role="presentation" class="active"><a href="#">Saved</a></li> 
-                     <li role="presentation"><a href="#">Submitted</a></li> 
-                     <li role="presentation"><a href="#">Approved</a></li> 
+                     <li role="presentation" class="active"><a href="#">Retrieved Tweets</a></li> 
                  </ul> 
              </div> 
              <div class="row"> 
                  <table class="table"> 
                      <thead> 
                      <tr> 
-                         <th>PO Number</th> 
                          <th>Date</th> 
-                         <th>Justification</th> 
+                         <th>From</th> 
+                         <th>Tweet</th> 
                      </tr> 
                      </thead> 
                      <tbody> 
                          <c:forEach items="${myRequestList}" var="request"> 
                              <tr> 
-                                 <td>${request.poNumber}</td> 
-                                 <td>${request.date}</td> 
-                                 <td>${request.justification}</td> 
+                                 <td>${request.getCreatedAt()}</td> 
+                                 <td>${request.getFromUser()}</td>                                  
+                                 <td>${request.getText()}</td> 
                              </tr> 
                          </c:forEach> 
                      </tbody> 
