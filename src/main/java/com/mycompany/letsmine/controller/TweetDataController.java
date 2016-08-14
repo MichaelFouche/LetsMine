@@ -58,12 +58,33 @@ public class TweetDataController {
     
     @RequestMapping(value = "/tweetCollect", method = RequestMethod.GET)    
     public String getTweetCollectView(Model model){ 
-        doTweetCollector("Takealot");
+        doTweetCollector("Rio2016");
         return "tweetCollect";
     }
     
     @RequestMapping(value = "/tagCloud", method = RequestMethod.GET)    
     public String getTagCloudView(Model model){ 
+                
+        
+        int[] scoreList = {5,2,5,7,4};
+        String[] nameList = {"Google","Facebook","Skype","Instagram","LetsMine"};
+        String[] linkList = {"#","#","#","#","#"};
+        
+        String html = ""; 
+        int i=0; 
+        int tagsPerLine = 30; 
+        for(int x=0;x<scoreList.length;x++) 
+        { 
+          int score = scoreList[x]; 
+          html+="<a href="+linkList[x]+" style=font-size:"+(score*7)+"px;>"+nameList[x]+"</a> "; 
+          if(i%tagsPerLine ==0) 
+          { 
+           html+="<br>"; 
+          } 
+          i++; 
+        } 
+        model.addAttribute("TagCloudHtml", html);
+        
         return "tagCloud";
     }
     

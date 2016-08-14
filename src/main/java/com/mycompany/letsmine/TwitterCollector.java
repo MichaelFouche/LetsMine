@@ -150,12 +150,17 @@ public class TwitterCollector {
                 element.isRetweet(),
                 element.getRetweetCount(),
                 profile.getName(),
-                hashtag
+                hashtag,
+                element.getEntities().getUrls(),
+                element.getEntities().getHashTags(),
+                element.getEntities().getMentions(),
+                element.getEntities().getMedia(),
+                element.getEntities().getTickerSymbols()
         );
 
     // save
     mongoOperation.save(tweetData);
-    System.out.println("Saved to MongoDB");
+    
 //        System.out.println("\t"
 //                +"|ID:"     +element.getIdStr()
 //               /* +"|"        +element.getId()

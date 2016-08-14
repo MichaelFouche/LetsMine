@@ -6,10 +6,15 @@
 package com.mycompany.letsmine.model;
 
 import java.util.Date;
+import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.social.twitter.api.Entities;
+import org.springframework.social.twitter.api.HashTagEntity;
+import org.springframework.social.twitter.api.MediaEntity;
+import org.springframework.social.twitter.api.MentionEntity;
+import org.springframework.social.twitter.api.TickerSymbolEntity;
 import org.springframework.social.twitter.api.TwitterProfile;
+import org.springframework.social.twitter.api.UrlEntity;
 
 /**
  *
@@ -33,8 +38,7 @@ public class TweetData {
     private String InReplyToScreenName;
     private String ProfileImageUrl;
     private String Source;
-    private String UnmodifiedText;
-   // private Entities entities;
+    private String UnmodifiedText;    
     private int FavoriteCount;
     private Boolean hasMedia;
     private Boolean hasMentions;
@@ -48,13 +52,19 @@ public class TweetData {
     
     private String letsMineUser;
     private String searchQuery;
+    
+    private List<UrlEntity> urls;
+    private List<HashTagEntity> tags;
+    private List<MentionEntity> mentions;
+    private List<MediaEntity> media;
+    private List<TickerSymbolEntity> tickerSymbols;
 
     
      public TweetData() {
         //hibernate
     }
     
-    public TweetData(Long tweetId, String LoggedInUser, String FromUser, Long FromUserId, Long InReplyToStatusId, Long InReplyToUserId, TwitterProfile User, Date CreatedAt, String LanguageCode, String Text, String InReplyToScreenName, String ProfileImageUrl, String Source, String UnmodifiedText/*, Entities entities*/, int FavoriteCount, Boolean hasMedia, Boolean hasMentions, Boolean hasTags, Boolean hasUrls, int hashCode, Boolean isFavorited, Boolean isRetweeted, Boolean isRetweet, int RetweetCount,String letsMineUser, String searchQuery) {
+    public TweetData(Long tweetId, String LoggedInUser, String FromUser, Long FromUserId, Long InReplyToStatusId, Long InReplyToUserId, TwitterProfile User, Date CreatedAt, String LanguageCode, String Text, String InReplyToScreenName, String ProfileImageUrl, String Source, String UnmodifiedText/*, Entities entities*/, int FavoriteCount, Boolean hasMedia, Boolean hasMentions, Boolean hasTags, Boolean hasUrls, int hashCode, Boolean isFavorited, Boolean isRetweeted, Boolean isRetweet, int RetweetCount,String letsMineUser, String searchQuery, List<UrlEntity> urls, List<HashTagEntity> tags,List<MentionEntity> mentions,List<MediaEntity> media,List<TickerSymbolEntity> tickerSymbols) {
         this.tweetId = tweetId;
         this.LoggedInUser = LoggedInUser;
         this.FromUser = FromUser;
@@ -69,7 +79,6 @@ public class TweetData {
         this.ProfileImageUrl = ProfileImageUrl;
         this.Source = Source;
         this.UnmodifiedText = UnmodifiedText;
-      //  this.entities = entities;
         this.FavoriteCount = FavoriteCount;
         this.hasMedia = hasMedia;
         this.hasMentions = hasMentions;
@@ -82,7 +91,72 @@ public class TweetData {
         this.RetweetCount = RetweetCount;
         this.letsMineUser = letsMineUser;
         this.searchQuery = searchQuery;
+        this.urls = urls;
+        this.tags = tags;
+        this.mentions = mentions;
+        this.media = media;
+        this.tickerSymbols = tickerSymbols;
     }
+
+    
+    
+    public String getLetsMineUser() {
+        return letsMineUser;
+    }
+
+    public void setLetsMineUser(String letsMineUser) {
+        this.letsMineUser = letsMineUser;
+    }
+
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
+
+    public List<UrlEntity> getUrls() {
+        return urls;
+    }
+
+    public void setUrls(List<UrlEntity> urls) {
+        this.urls = urls;
+    }
+
+    public List<HashTagEntity> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<HashTagEntity> tags) {
+        this.tags = tags;
+    }
+
+    public List<MentionEntity> getMentions() {
+        return mentions;
+    }
+
+    public void setMentions(List<MentionEntity> mentions) {
+        this.mentions = mentions;
+    }
+
+    public List<MediaEntity> getMedia() {
+        return media;
+    }
+
+    public void setMedia(List<MediaEntity> media) {
+        this.media = media;
+    }
+
+    public List<TickerSymbolEntity> getTickerSymbols() {
+        return tickerSymbols;
+    }
+
+    public void setTickerSymbols(List<TickerSymbolEntity> tickerSymbols) {
+        this.tickerSymbols = tickerSymbols;
+    }
+    
+    
     
     public String getLoggedInUser() {
         return LoggedInUser;
