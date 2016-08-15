@@ -7,16 +7,15 @@
              <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" ></script> 
              <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" ></script> 
              <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
-             <jsp:useBean id="myRequestList" scope="request" type="java.util.List"/> 
+             <jsp:useBean id="myRequestList" scope="request" type="java.util.List"/>
+             <jsp:useBean id="headingHTML" scope="request" type="String"/> 
          </head> 
          <body> 
          <div class="container-fluid"> 
              <div class="page-header"> 
-                 <h1>LetsMine - MongoDB Tweets</h1> 
-             </div> 
-             <a href="/LetsMine">Home ||</a>
-             <a href="/LetsMine/myRequests.html">Show current database ||</a>
-             <a href="/LetsMine/tagCloud.html">Tag Cloud</a>
+                 <h1>LetsMine - MongoDB Tweets</h1>              
+                ${headingHTML}
+            </div> 
              <div class="row"> 
                  <ul class="nav nav-tabs"> 
                      <li role="presentation" class="active"><a href="#">Retrieved Tweets</a></li> 

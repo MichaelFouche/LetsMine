@@ -14,18 +14,23 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" ></script> 
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" ></script> 
 
-</head>
-<body>
-	<br>
-	<div style="text-align:center">
-		<h2>
-			Welcome <br> <br>
-		</h2>
-		<h3>
-                             <a href="myRequests.html">Show current database</a>
-                        <br> <a href="tweetCollect.html">Mine Stuff (Takealot)</a>
-                        <br> <a href="tagCloud.html">Show Tag Cloud</a>
-		</h3>
-	</div>
-</body>
+    </head>
+    <body>
+        <div class="container-fluid"> 
+            <div class="page-header">                  
+                <br>
+                <div style="text-align:center">
+                    <h1>Lets Mine</h1>
+                    
+                     </div> 
+                    <h3 style="text-align:center">
+                            <a href="query.html">Query Builder</a> 
+                       <br> <a href="myRequests.html">Data Manager</a>
+                       <br> <a href="tagCloud.html">Analytics</a>
+                       <br> <a href="tagCloud.html">Reporting</a>
+                    </h3>
+            </div>
+            </div>
+        </div>
+    </body>
 </html>

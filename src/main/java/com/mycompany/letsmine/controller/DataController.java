@@ -20,20 +20,28 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 /**
  *
  * @author michaelfouche
  */
 @Controller 
-public class TweetDataController {
+public class DataController {
     
     private static final String MY_REQUESTS_VIEW="myRequests"; 
     private static final String MY_REQUESTS_MODEL_ATTRIBUTE="myRequestList"; 
  
+    String headingHTML = 
+                " <a href=\"/LetsMine\">Home ||</a>\n" +
+"                 <a href=\"/LetsMine/query.html\">Query Builder ||</a>\n" +
+"                 <a href=\"/LetsMine/myRequests.html\">Data Manager ||</a>\n" +
+"                 <a href=\"/LetsMine/#.html\">Analytics ||</a>\n" +
+"                 <a href=\"/LetsMine/tagCloud.html\">Reporting</a>";
 
     @RequestMapping(value = "/myRequests", method = RequestMethod.GET) 
     public String getMyRequests(Model model){ 
+        model.addAttribute("headingHTML", headingHTML);
         ApplicationContext ctx;
         MongoOperations mongoOperation;
         
@@ -42,8 +50,11 @@ public class TweetDataController {
         
         List<TweetData> listDB = mongoOperation.findAll(TweetData.class);
         model.addAttribute(MY_REQUESTS_MODEL_ATTRIBUTE, listDB); 
+        
+        
         return MY_REQUESTS_VIEW; 
     } 
+    
    
     @RequestMapping("/welcome")
     public ModelAndView helloWorld() {
@@ -56,23 +67,38 @@ public class TweetDataController {
             return new ModelAndView("welcome", "message", message);
     }
     
-    @RequestMapping(value = "/tweetCollect", method = RequestMethod.GET)    
-    public String getTweetCollectView(Model model){ 
-        doTweetCollector("Rio2016");
-        return "tweetCollect";
+    @RequestMapping(value = "/query", method = RequestMethod.GET)    
+    public String getQueryView(Model model){ 
+        model.addAttribute("headingHTML", headingHTML);
+        //doTweetCollector("Rio2016");
+        String html = ""; 
+        
+        model.addAttribute("query_response", html);
+        
+        return "query";
+    }
+    @RequestMapping(value = "/query_action", method = RequestMethod.GET)    
+    public String getQueryResponseView(Model model,@RequestParam("query") String queryValue){ 
+        model.addAttribute("headingHTML", headingHTML);
+        //doTweetCollector("Rio2016");
+        String html = ""; 
+        html+="<br>THIS IS CONTROLLER SAYING: Passed through values:<br>"+queryValue+"<br>"; 
+        model.addAttribute("query_response", html);
+        
+        return "query";
     }
     
     @RequestMapping(value = "/tagCloud", method = RequestMethod.GET)    
     public String getTagCloudView(Model model){ 
-                
+        model.addAttribute("headingHTML", headingHTML);    
         
-        int[] scoreList = {5,2,5,7,4};
-        String[] nameList = {"Google","Facebook","Skype","Instagram","LetsMine"};
-        String[] linkList = {"#","#","#","#","#"};
+        int[] scoreList = {5,2,5,7,4,5,2,5,7,4};
+        String[] nameList = {"Google","Facebook","Skype","Instagram","LetsMine","Google","Facebook","Skype","Instagram","LetsMine"};
+        String[] linkList = {"#","#","#","#","#","#","#","#","#","#"};
         
         String html = ""; 
-        int i=0; 
-        int tagsPerLine = 30; 
+        int i=1; 
+        int tagsPerLine = 4; 
         for(int x=0;x<scoreList.length;x++) 
         { 
           int score = scoreList[x]; 
