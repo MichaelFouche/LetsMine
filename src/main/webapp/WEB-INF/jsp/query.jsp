@@ -16,6 +16,8 @@
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" ></script> 
         <jsp:useBean id="query_response" scope="request" type="String"/> 
         <jsp:useBean id="headingHTML" scope="request" type="String"/> 
+        <jsp:useBean id="errors" scope="request" type="String"/> 
+        <jsp:useBean id="success" scope="request" type="String"/> 
     </head>
     <body>
         <div class="container-fluid"> 
@@ -28,7 +30,7 @@
             <form action="query_action.html" method="get" id="queryTextArea">
                 <fieldset style='padding:5px 5px 10px 22px'>
                     <legend>Query Builder</legend>
-                        <textarea name="query" form="queryTextArea" rows="4" cols="50">DATAMINE HASHTAG = rio2016</textarea>
+                        <textarea name="query" form="queryTextArea" rows="4" cols="50">DATAMINE twitter HASHTAG rio2016 FROM Cape Town RADIUS 2000</textarea>
                         <br>
                     <input type="submit" value="Submit">
                 </fieldset>
@@ -36,6 +38,8 @@
 
 
             <div class="row" style='padding:5px 5px 10px 40px'> 
+                   <font color="red">${errors}</font>
+                   <font color="blue">${success}</font>
                    ${query_response}
             </div> 
         </div> 

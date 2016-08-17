@@ -7,7 +7,7 @@
              <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" ></script> 
              <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" ></script> 
              <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
-             <jsp:useBean id="myRequestList" scope="request" type="java.util.List"/>
+             <jsp:useBean id="myQueryList" scope="request" type="java.util.List"/>
              <jsp:useBean id="headingHTML" scope="request" type="String"/> 
          </head> 
          <body> 
@@ -31,7 +31,7 @@
                      </tr> 
                      </thead> 
                      <tbody> 
-                         <c:forEach items="${myRequestList}" var="request"> 
+                         <c:forEach items="${myQueryList}" var="request"> 
                              <tr> 
                                  <td>${request.getCreatedAt()}</td> 
                                  <td>${request.getFromUser()}</td>                                  

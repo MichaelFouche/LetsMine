@@ -12,6 +12,7 @@ import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.social.twitter.api.GeoCode;
 import org.springframework.social.twitter.api.SearchParameters;
 import org.springframework.social.twitter.api.SearchResults;
 import org.springframework.social.twitter.api.Tweet;
@@ -89,7 +90,7 @@ public class TwitterCollector {
         this.accessTokenSecret = "4uXUK3Lq7X4a02HjuNAiBcO1p4hSJGtDaiwgSG4BkYaAc";// The access token secret granted after OAuth authorization*/
     }
     
-   public void retrieveTweet(String hashtag){
+   public void retrieveTweet(String hashtag, String lat, String lng, int radius){
     
     Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
@@ -109,7 +110,7 @@ public class TwitterCollector {
     }*/
     String tweetID = "760118695037403136";//need to populate data since it's only a week old
     SearchResults resultsAdv = twitter.searchOperations().search(new SearchParameters(hashtag)
-    //.geoCode(new GeoCode(Double.parseDouble(lat), Double.parseDouble(lng), 150, GeoCode.Unit.KILOMETER))
+    .geoCode(new GeoCode(Double.parseDouble(lat), Double.parseDouble(lng), radius, GeoCode.Unit.KILOMETER))
     //.lang("af")
     //.resultType(SearchParameters.ResultType.MIXED)//mixed recent popular
     .count(20)//max 100,default 15

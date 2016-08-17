@@ -25,9 +25,9 @@
                      </div> 
                     <h3 style="text-align:center">
                             <a href="query.html">Query Builder</a> 
-                       <br> <a href="myRequests.html">Data Manager</a>
-                       <br> <a href="tagCloud.html">Analytics</a>
-                       <br> <a href="tagCloud.html">Reporting</a>
+                       <br> <a href="queryManager.html">Data Manager</a>
+                       <br> <a href="analytics.html">Analytics</a>
+                       <br> <a href="reporting.html">Reporting</a>
                     </h3>
             </div>
             </div>
