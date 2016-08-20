@@ -11,4 +11,5 @@ package com.mycompany.letsmine.service;
  */
 public interface CollectorThreadService {
     public void retrieveTweets();
+    
 }

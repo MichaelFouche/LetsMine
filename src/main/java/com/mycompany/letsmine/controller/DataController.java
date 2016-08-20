@@ -5,6 +5,8 @@
  */
 package com.mycompany.letsmine.controller;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mycompany.letsmine.TwitterCollector;
 import com.mycompany.letsmine.config.SpringMongoConfig;
 import com.mycompany.letsmine.geoCode.AddressConverter;
@@ -113,16 +115,22 @@ public class DataController implements Runnable{
 
         
         model.addAttribute("headingHTML", headingHTML);
-        
+      /*  
         CollectorThreadService collectorThread =  (CollectorThreadService)ctx.getBean("CollectorThreadService");
         Thread t = new Thread((Runnable) collectorThread);
         System.out.println("Starting sub thread");
-        t.start();
-        
+      //  t.start();
+        */
         System.out.println("Moving on");
         
         //CALL THE BEAN here
         TweetDataService tweetData =  (TweetDataService)ctx.getBean("TweetDataService");
+        List bySearchField = tweetData.findByField("searchQuery");
+        System.out.println("Queries by field: "+bySearchField);
+        
+        DBObject dbObject = new BasicDBObject("letsMineUser",new BasicDBObject("$gt","mfouche91"));
+        List bySearchQuery = tweetData.findByQuery("letsMineUser",dbObject);
+        System.out.println("Queries by mfouche91: "+bySearchQuery);
         
         //Do not have to initialise this object everytime as it is alive in the bean context
        /* MongoOperations mongoOperation; 

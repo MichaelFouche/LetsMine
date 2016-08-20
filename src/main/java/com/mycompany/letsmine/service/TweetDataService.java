@@ -8,7 +8,7 @@ package com.mycompany.letsmine.service;
 import com.mycompany.letsmine.model.TweetData;
 import java.util.List;
 import org.springframework.stereotype.Service;
-
+import com.mongodb.DBObject;
 /**
  *
  * @author michaelfouche
@@ -16,5 +16,7 @@ import org.springframework.stereotype.Service;
 
 public interface TweetDataService {
     public List<TweetData> getAllTweets();
+    public List findByField(String key);
+    public List findByQuery(String field, DBObject dbObject);
     
 }

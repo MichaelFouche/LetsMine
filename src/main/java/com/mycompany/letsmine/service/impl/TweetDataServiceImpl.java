@@ -5,6 +5,7 @@
  */
 package com.mycompany.letsmine.service.impl;
 
+import com.mongodb.DBObject;
 import com.mycompany.letsmine.config.SpringMongoConfig;
 import com.mycompany.letsmine.model.TweetData;
 import com.mycompany.letsmine.model.User;
@@ -15,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.MongoOperations;
+import static org.springframework.data.util.ClassTypeInformation.COLLECTION;
 
 /**
  *
@@ -23,23 +25,42 @@ import org.springframework.data.mongodb.core.MongoOperations;
 
 public class TweetDataServiceImpl implements TweetDataService{
 
+    ApplicationContext ctx;
+    MongoOperations mongoOperation;
+    User user;
+     
+    private static final String COLLECTION = "tweetdata";   
+    
     @Override
     public List<TweetData> getAllTweets() {
         return getTweetData();
     }
-    
-    private List<TweetData> getTweetData(){
-        List<TweetData> tweetData = new ArrayList<TweetData>();
-        
-        ApplicationContext ctx;
-        MongoOperations mongoOperation;
-        User user;
+
+    public TweetDataServiceImpl() {
         ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
         mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");
         user = new User("mkyong", "password123");
-        
+    }
+    
+    
+    
+    private List<TweetData> getTweetData(){
+        List<TweetData> tweetData = new ArrayList<TweetData>();
         tweetData = mongoOperation.findAll(TweetData.class);
         return tweetData;
     }
+
+    
+    @Override
+    public List findByField(String field) {
+        return mongoOperation.getCollection(COLLECTION).distinct(field);
+    }
+
+    @Override
+    public List findByQuery(String field, DBObject dbObject) {
+        return mongoOperation.getCollection(COLLECTION)
+            .distinct(field, dbObject);
+    }
+
     
 }

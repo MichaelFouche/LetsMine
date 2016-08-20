@@ -97,7 +97,8 @@ public class TwitterCollector {
     TwitterProfile profile = twitter.userOperations().getUserProfile();
     String profileId = twitter.userOperations().getScreenName();
 
-    System.out.println("Name: " + profile.getName());
+    System.out.println("Name: " + profile.getName()+ "Screen Name: "+profile.getScreenName());
+    
     System.out.println("" + profile.getProfileUrl());
 
     //SearchResults results = twitter.searchOperations().search(profileId, 0);
@@ -150,7 +151,7 @@ public class TwitterCollector {
                 element.isRetweeted(),
                 element.isRetweet(),
                 element.getRetweetCount(),
-                profile.getName(),
+                profile.getScreenName(),
                 hashtag,
                 element.getEntities().getUrls(),
                 element.getEntities().getHashTags(),
