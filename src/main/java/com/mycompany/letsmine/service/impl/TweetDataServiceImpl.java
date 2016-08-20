@@ -13,20 +13,22 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.MongoOperations;
 
 /**
  *
  * @author michaelfouche
  */
+
 public class TweetDataServiceImpl implements TweetDataService{
 
     @Override
     public List<TweetData> getAllTweets() {
-        return getDummyTweetData();
+        return getTweetData();
     }
     
-    private List<TweetData> getDummyTweetData(){
+    private List<TweetData> getTweetData(){
         List<TweetData> tweetData = new ArrayList<TweetData>();
         
         ApplicationContext ctx;
@@ -36,7 +38,7 @@ public class TweetDataServiceImpl implements TweetDataService{
         mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");
         user = new User("mkyong", "password123");
         
-        mongoOperation.findAll(TweetData.class);
+        tweetData = mongoOperation.findAll(TweetData.class);
         return tweetData;
     }
     

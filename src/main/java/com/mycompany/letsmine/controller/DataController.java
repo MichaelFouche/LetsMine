@@ -12,6 +12,7 @@ import com.mycompany.letsmine.geoCode.GoogleResponse;
 import com.mycompany.letsmine.geoCode.Result;
 import com.mycompany.letsmine.model.QueryValues.QueryValues;
 import com.mycompany.letsmine.model.TweetData;
+import com.mycompany.letsmine.service.CollectorThreadService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.mycompany.letsmine.service.TweetDataService;
@@ -31,7 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author michaelfouche
  */
 @Controller 
-public class DataController {
+public class DataController implements Runnable{
     String error = "";
     String headingHTML = 
                 " <a href=\"/LetsMine\">Home ||</a>\n" +
@@ -40,18 +41,19 @@ public class DataController {
 "                 <a href=\"/LetsMine/analytics.html\">Analytics ||</a>\n" +
 "                 <a href=\"/LetsMine/reporting.html\">Reporting</a>";
 
-    
-   
-    @RequestMapping("/welcome")
-    public ModelAndView helloWorld() {
-       /* */
-
-            String message = "<br><div style='text-align:center;'>"
-                            + "<h3>Lets Mine</h3>"
-                          //  + "<p>Put Twitter data here <<Size: "+listDB.size()+">></p>"
-                            + "</div><br><br>";
-            return new ModelAndView("welcome", "message", message);
+    int myCount = 0;
+  
+    public void run() {
+        while(myCount <= 100){
+            try{
+                System.out.println("Controller Thread: "+(++myCount));
+                Thread.sleep(1000);
+            } catch (InterruptedException iex) {
+                System.out.println("Exception in thread: "+iex.getMessage());
+            }
+        }
     }
+   
     
     @RequestMapping(value = "/query", method = RequestMethod.GET)    
     public String getQueryView(Model model){ 
@@ -62,6 +64,7 @@ public class DataController {
         
         model.addAttribute("query_response", html);
         model.addAttribute("errors",error);
+        model.addAttribute("success",error);
         return "query";
     }
     @RequestMapping(value = "/query_action", method = RequestMethod.GET)    
@@ -105,15 +108,28 @@ public class DataController {
         //get their requests
         
         //select user and request to display request data
+        ApplicationContext ctx;
+        ctx = new ClassPathXmlApplicationContext("beans.xml");
+
         
         model.addAttribute("headingHTML", headingHTML);
-        ApplicationContext ctx;
-        MongoOperations mongoOperation;
         
-        ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
-        mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");
+        CollectorThreadService collectorThread =  (CollectorThreadService)ctx.getBean("CollectorThreadService");
+        Thread t = new Thread((Runnable) collectorThread);
+        System.out.println("Starting sub thread");
+        t.start();
         
-        List<TweetData> listDB = mongoOperation.findAll(TweetData.class);
+        System.out.println("Moving on");
+        
+        //CALL THE BEAN here
+        TweetDataService tweetData =  (TweetDataService)ctx.getBean("TweetDataService");
+        
+        //Do not have to initialise this object everytime as it is alive in the bean context
+       /* MongoOperations mongoOperation; 
+        mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");        
+        List<TweetData> listDB = mongoOperation.findAll(TweetData.class);*/
+       
+        List<TweetData> listDB =  tweetData.getAllTweets();
         model.addAttribute("myQueryList", listDB);      
         
         return "queryManager"; 
@@ -212,7 +228,7 @@ public class DataController {
     public void doTweetCollector(QueryValues queryValues){ 
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
         TwitterCollector tc = (TwitterCollector) context.getBean("TwitterCollector");
-        tc.retrieveTweet(queryValues.getHashtagValue(), queryValues.getLat(), queryValues.getLng(), queryValues.getRadiusValue());
+        tc.retrieveTweet(queryValues.getHashtagValue(), queryValues.getLat(), queryValues.getLng(), queryValues.getRadiusValue());         
     }
     
     public QueryValues interpretQuery(String queryValue){
@@ -223,7 +239,11 @@ public class DataController {
         int radiusValue = 0;
         
         try{
-         
+            int sizeOfAction = 0;
+            int sizeOfHashtag = 0;
+            int sizeOfFrom = 0;
+            int sizeOfRadius = 0;
+            
             //DATAMINE
             int locationOfAction = queryValue.indexOf("datamine");
             if(locationOfAction==-1){locationOfAction = queryValue.indexOf("Datamine");}
@@ -233,6 +253,7 @@ public class DataController {
             int locationOfHashtag = queryValue.indexOf("hashtag");
             if(locationOfHashtag==-1){locationOfHashtag = queryValue.indexOf("Hashtag");}
             if(locationOfHashtag==-1){locationOfHashtag = queryValue.indexOf("HASHTAG");}
+          // if(locationOfHashtag==-1){locationOfHashtag = queryValue.indexOf("#");}
 
             //FROM
             int locationOfFROM = queryValue.indexOf("from");

@@ -5,16 +5,10 @@
  */
 package com.mycompany.letsmine.service;
 
-import com.mycompany.letsmine.model.TweetData;
-import java.util.List;
-import org.springframework.stereotype.Service;
-
 /**
  *
  * @author michaelfouche
  */
-
-public interface TweetDataService {
-    public List<TweetData> getAllTweets();
-    
+public interface CollectorThreadService {
+    public void retrieveTweets();
 }
