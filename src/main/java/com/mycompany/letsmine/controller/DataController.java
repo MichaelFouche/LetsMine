@@ -14,10 +14,12 @@ import com.mycompany.letsmine.geoCode.GoogleResponse;
 import com.mycompany.letsmine.geoCode.Result;
 import com.mycompany.letsmine.model.QueryValues.QueryValues;
 import com.mycompany.letsmine.model.TweetData;
+import com.mycompany.letsmine.model.User;
 import com.mycompany.letsmine.service.CollectorThreadService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.mycompany.letsmine.service.TweetDataService;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.context.ApplicationContext;
@@ -34,7 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author michaelfouche
  */
 @Controller 
-public class DataController implements Runnable{
+public class DataController {
     String error = "";
     String headingHTML = 
                 " <a href=\"/LetsMine\">Home ||</a>\n" +
@@ -43,18 +45,22 @@ public class DataController implements Runnable{
 "                 <a href=\"/LetsMine/analytics.html\">Analytics ||</a>\n" +
 "                 <a href=\"/LetsMine/reporting.html\">Reporting</a>";
 
-    int myCount = 0;
-  
-    public void run() {
-        while(myCount <= 100){
-            try{
-                System.out.println("Controller Thread: "+(++myCount));
-                Thread.sleep(1000);
-            } catch (InterruptedException iex) {
-                System.out.println("Exception in thread: "+iex.getMessage());
-            }
-        }
+    private int myCount = 0;
+    private ApplicationContext context;
+    private TwitterCollector twitterCollector;
+    private User user;
+    private TweetDataService tweetData;
+    
+    public DataController(){ 
+         context = new ClassPathXmlApplicationContext("beans.xml");
+         twitterCollector =  (TwitterCollector) context.getBean("TwitterCollector");
+         user =  (User)context.getBean("User");
+         user.setUsername(twitterCollector.retrieveUserProfile());
+         tweetData =  (TweetDataService)context.getBean("TweetDataService");
+         
+         System.out.println("in Constructor*******************");
     }
+    
    
     
     @RequestMapping(value = "/query", method = RequestMethod.GET)    
@@ -103,42 +109,55 @@ public class DataController implements Runnable{
         return "query";
     }
     
+    private List<User> getUniqueUsers(){
+        List<String> usersFromDB = tweetData.findByField("letsMineUser");
+        System.out.println("usersFromDB"+usersFromDB);
+        List<User> listOfUsers = new ArrayList();
+        
+        for(String thisUser: usersFromDB)
+        {
+            User user = new User(thisUser);
+            listOfUsers.add(user);
+        }
+        return listOfUsers;
+    }
+    
+    private List<User> getQueriesForUsers(List<User> users){ 
+        for(User thisUser: users)
+        {            
+            DBObject dbObject = new BasicDBObject();
+            dbObject.put("letsMineUser",thisUser.getUsername());
+            List bySearchQuery = tweetData.findByQuery("searchQuery",dbObject);
+            thisUser.setQueries(bySearchQuery);
+        }
+        return users;
+    }
+    
     @RequestMapping(value = "/queryManager", method = RequestMethod.GET) 
     public String queryManagerView(Model model){ 
-        //get unique users
-        
-        //get their requests
-        
-        //select user and request to display request data
-        ApplicationContext ctx;
-        ctx = new ClassPathXmlApplicationContext("beans.xml");
-
-        
         model.addAttribute("headingHTML", headingHTML);
+        
+        String loggedInUser = (String)user.getUsername();
+        System.out.println("loggedInUser: "+loggedInUser);
+        //get unique users
+        List uniqueUsers = getUniqueUsers();
+        System.out.println("Users: "+uniqueUsers);
+        //get their requests
+        List uniqueUsersWithQueries = getQueriesForUsers(uniqueUsers);
+        System.out.println("Queries by: "+uniqueUsersWithQueries);
+        //select user and request to display request data
+       
+        
       /*  
         CollectorThreadService collectorThread =  (CollectorThreadService)ctx.getBean("CollectorThreadService");
         Thread t = new Thread((Runnable) collectorThread);
         System.out.println("Starting sub thread");
       //  t.start();
-        */
-        System.out.println("Moving on");
-        
-        //CALL THE BEAN here
-        TweetDataService tweetData =  (TweetDataService)ctx.getBean("TweetDataService");
-        List bySearchField = tweetData.findByField("searchQuery");
-        System.out.println("Queries by field: "+bySearchField);
-        
-        DBObject dbObject = new BasicDBObject("letsMineUser",new BasicDBObject("$gt","mfouche91"));
-        List bySearchQuery = tweetData.findByQuery("letsMineUser",dbObject);
-        System.out.println("Queries by mfouche91: "+bySearchQuery);
-        
-        //Do not have to initialise this object everytime as it is alive in the bean context
-       /* MongoOperations mongoOperation; 
-        mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");        
-        List<TweetData> listDB = mongoOperation.findAll(TweetData.class);*/
+        */   
        
         List<TweetData> listDB =  tweetData.getAllTweets();
-        model.addAttribute("myQueryList", listDB);      
+        model.addAttribute("myQueryList", listDB);  
+        model.addAttribute("loggedInUser", loggedInUser);  
         
         return "queryManager"; 
     } 
@@ -234,9 +253,7 @@ public class DataController implements Runnable{
     }
     
     public void doTweetCollector(QueryValues queryValues){ 
-        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-        TwitterCollector tc = (TwitterCollector) context.getBean("TwitterCollector");
-        tc.retrieveTweet(queryValues.getHashtagValue(), queryValues.getLat(), queryValues.getLng(), queryValues.getRadiusValue());         
+        twitterCollector.retrieveTweet(queryValues.getHashtagValue(), queryValues.getLat(), queryValues.getLng(), queryValues.getRadiusValue());         
     }
     
     public QueryValues interpretQuery(String queryValue){

@@ -5,6 +5,7 @@
  */
 package com.mycompany.letsmine.model;
 
+import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,23 +23,44 @@ public class User {
 	String username;
 
 	String password;
+        
+        List<String> queries;
 	
 
     public User() {
     }
 
+    public User(String username) {
+        this.username = username;
+    }
 
+    
     public User(String username, String password) {
         this.username = username;
         this.password = password;
     }
-        
-    @Override
-    public String toString() {
-        return "User{" + "id=" + id + ", username=" + username + ", password=" + password + '}';
+    
+
+    public User(String username, String password, List<String> queries) {
+        this.username = username;
+        this.password = password;
+        this.queries = queries;
     }
 
-    
+
+
+    public List<String> getQueries() {
+        return queries;
+    }
+
+    public void setQueries(List<String> queries) {
+        this.queries = queries;
+    }
+
+    @Override
+    public String toString() {
+        return "username=" + username + ", queries=" + queries + '}';
+    }
 
     public String getId() {
         return id;

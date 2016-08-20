@@ -26,6 +26,7 @@
             <constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
     </bean>
     
+    <bean id="User" class="com.mycompany.letsmine.model.User"/> 
     <bean id="TweetDataService" class="com.mycompany.letsmine.service.impl.TweetDataServiceImpl"/> 
     <bean id="CollectorThreadService" class="com.mycompany.letsmine.service.impl.CollectorThreadServiceImpl"/>  
 </beans>

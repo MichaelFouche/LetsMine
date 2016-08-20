@@ -90,11 +90,17 @@ public class TwitterCollector {
         this.accessTokenSecret = "4uXUK3Lq7X4a02HjuNAiBcO1p4hSJGtDaiwgSG4BkYaAc";// The access token secret granted after OAuth authorization*/
     }
     
+    public String retrieveUserProfile(){
+        Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
+        return twitter.userOperations().getUserProfile().getScreenName();
+    }
+    
    public void retrieveTweet(String hashtag, String lat, String lng, int radius){
     
     Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
     TwitterProfile profile = twitter.userOperations().getUserProfile();
+    
     String profileId = twitter.userOperations().getScreenName();
 
     System.out.println("Name: " + profile.getName()+ "Screen Name: "+profile.getScreenName());
@@ -114,7 +120,7 @@ public class TwitterCollector {
     .geoCode(new GeoCode(Double.parseDouble(lat), Double.parseDouble(lng), radius, GeoCode.Unit.KILOMETER))
     //.lang("af")
     //.resultType(SearchParameters.ResultType.MIXED)//mixed recent popular
-    .count(20)//max 100,default 15
+    .count(2)//max 100,default 15
     //.until(untilDate)
     .includeEntities(true)//media, urls, user mentions, hashtags, symbols
     //.maxId(Long.parseLong(tweetID))
@@ -151,7 +157,7 @@ public class TwitterCollector {
                 element.isRetweeted(),
                 element.isRetweet(),
                 element.getRetweetCount(),
-                profile.getScreenName(),
+                profile.getScreenName(),//.getName(), //
                 hashtag,
                 element.getEntities().getUrls(),
                 element.getEntities().getHashTags(),
