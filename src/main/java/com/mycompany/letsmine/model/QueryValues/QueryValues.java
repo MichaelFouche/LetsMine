@@ -16,16 +16,25 @@ public class QueryValues {
     String lat;
     String lng;
     int radiusValue;
+    String query;
 
-    public QueryValues(String actionValue, String hashtagValue, String lat, String lng, int radiusValue) {
+    public QueryValues(String actionValue, String hashtagValue, String lat, String lng, int radiusValue, String query) {
         this.actionValue = actionValue;
         this.hashtagValue = hashtagValue;
         this.lat = lat;
         this.lng = lng;
         this.radiusValue = radiusValue;
+        this.query = query;
     }
 
-    
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
     
     
 

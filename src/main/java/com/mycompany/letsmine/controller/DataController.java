@@ -51,6 +51,10 @@ public class DataController {
     private User user;
     private TweetDataService tweetData;
     
+    private String loggedInUser;
+    private List uniqueUsers;
+    private List uniqueUsersWithQueries;
+    
     public DataController(){ 
          context = new ClassPathXmlApplicationContext("beans.xml");
          twitterCollector =  (TwitterCollector) context.getBean("TwitterCollector");
@@ -132,47 +136,103 @@ public class DataController {
         }
         return users;
     }
+    private void RetrieveUsersWithQueries(){
+        loggedInUser = (String)user.getUsername();
+        System.out.println("loggedInUser: "+loggedInUser);
+        uniqueUsers = getUniqueUsers();
+        System.out.println("Users: "+uniqueUsers);
+        uniqueUsersWithQueries = getQueriesForUsers(uniqueUsers);
+        System.out.println("Queries by: "+uniqueUsersWithQueries);
+    }
+    
+    private List getAllTweets()
+    {
+       return tweetData.getAllTweets();
+    }
     
     @RequestMapping(value = "/queryManager", method = RequestMethod.GET) 
     public String queryManagerView(Model model){ 
         model.addAttribute("headingHTML", headingHTML);
         
-        String loggedInUser = (String)user.getUsername();
-        System.out.println("loggedInUser: "+loggedInUser);
-        //get unique users
-        List uniqueUsers = getUniqueUsers();
-        System.out.println("Users: "+uniqueUsers);
-        //get their requests
-        List uniqueUsersWithQueries = getQueriesForUsers(uniqueUsers);
-        System.out.println("Queries by: "+uniqueUsersWithQueries);
-        //select user and request to display request data
-       
+        RetrieveUsersWithQueries();
         
-      /*  
-        CollectorThreadService collectorThread =  (CollectorThreadService)ctx.getBean("CollectorThreadService");
-        Thread t = new Thread((Runnable) collectorThread);
-        System.out.println("Starting sub thread");
-      //  t.start();
-        */   
+        //select user and request to display request data
+               
+        /*  
+            CollectorThreadService collectorThread =  (CollectorThreadService)ctx.getBean("CollectorThreadService");
+            Thread t = new Thread((Runnable) collectorThread);
+            System.out.println("Starting sub thread");
+            t.start();
+        */ 
        
-        List<TweetData> listDB =  tweetData.getAllTweets();
-        model.addAttribute("myQueryList", listDB);  
-        model.addAttribute("loggedInUser", loggedInUser);  
+        //List<TweetData> listDB ;
+        //model.addAttribute("myQueryList", listDB);  
+        model.addAttribute("loggedInUser", loggedInUser); 
+        model.addAttribute("users", uniqueUsersWithQueries);  
+        model.addAttribute("resultMessage", "");  
         
         return "queryManager"; 
     } 
+    @RequestMapping(value = "/queryManagerRequest", method = RequestMethod.GET) 
+    public String queryManagerViewWithRequest(Model model,@RequestParam("resultMessage") String resultMessage){ 
+        model.addAttribute("headingHTML", headingHTML);
+        
+        if(!resultMessage.equals("")){
+          //Do Query
+          System.out.println("...Do Query...");
+          
+          //add to text with response
+          resultMessage = "<font color=\"green\">"+resultMessage+"<br>Query Performed</font><br>";
+        }
+        
+        RetrieveUsersWithQueries();
+        
+        //model.addAttribute("myQueryList", listDB); 
+        //<jsp:useBean id="myQueryList" scope="request" type="java.util.List"/>
+        model.addAttribute("loggedInUser", loggedInUser); 
+        model.addAttribute("users", uniqueUsersWithQueries);  
+        model.addAttribute("resultMessage", resultMessage);  
+        return "queryManager"; 
+    }
     
     @RequestMapping(value = "/analytics", method = RequestMethod.GET) 
     public String analyticsView(Model model){ 
-        model.addAttribute("headingHTML", headingHTML);
-//        ApplicationContext ctx;
-//        MongoOperations mongoOperation;
-//        
-//        ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
-//        mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");
-//        
-//        List<TweetData> listDB = mongoOperation.findAll(TweetData.class);
-//        model.addAttribute("myQueryList", listDB);      
+        model.addAttribute("headingHTML", headingHTML);   
+        
+        List comboAnalytics = new ArrayList();
+        comboAnalytics.add("Tag Cloud");        
+        comboAnalytics.add("Manager Report");
+        
+        RetrieveUsersWithQueries();  
+        model.addAttribute("loggedInUser", loggedInUser); 
+        model.addAttribute("users", uniqueUsersWithQueries);  
+        model.addAttribute("resultMessage", "");           
+        model.addAttribute("comboAnalytics", comboAnalytics); 
+        
+        return "analytics"; 
+    }
+    
+    @RequestMapping(value = "/analyticsRequest", method = RequestMethod.GET) 
+    public String analyticsViewWithRequest(Model model,@RequestParam("analyticsChoice") String analyticsChoice,@RequestParam("resultMessage") String resultMessage){ 
+        model.addAttribute("headingHTML", headingHTML);   
+        
+        if(!resultMessage.equals("")){
+          //Do Query
+          System.out.println("...Do Analytics...");
+          
+          //add to text with response
+          resultMessage = "<font color=\"green\">"+analyticsChoice + " Analytics Performed for " +resultMessage+"<br></font><br>";
+        }
+        
+        List comboAnalytics = new ArrayList();
+        comboAnalytics.add("Tag Cloud");        
+        comboAnalytics.add("Manager Report");
+        
+        RetrieveUsersWithQueries();  
+        model.addAttribute("loggedInUser", loggedInUser); 
+        model.addAttribute("users", uniqueUsersWithQueries);  
+        model.addAttribute("resultMessage", resultMessage);           
+        model.addAttribute("comboAnalytics", comboAnalytics); 
         
         return "analytics"; 
     } 
@@ -253,7 +313,7 @@ public class DataController {
     }
     
     public void doTweetCollector(QueryValues queryValues){ 
-        twitterCollector.retrieveTweet(queryValues.getHashtagValue(), queryValues.getLat(), queryValues.getLng(), queryValues.getRadiusValue());         
+        twitterCollector.retrieveTweet(queryValues.getHashtagValue(), queryValues.getLat(), queryValues.getLng(), queryValues.getRadiusValue(), queryValues.getQuery());         
     }
     
     public QueryValues interpretQuery(String queryValue){
@@ -312,7 +372,7 @@ public class DataController {
 
             System.out.println("Radius:"+ radiusValue);
 
-            QueryValues queryValues = new QueryValues(actionValue, hashtagValue, lat, lng, radiusValue);
+            QueryValues queryValues = new QueryValues(actionValue, hashtagValue, lat, lng, radiusValue, queryValue);
             return queryValues;
         }
         catch(Exception e)

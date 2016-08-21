@@ -95,7 +95,7 @@ public class TwitterCollector {
         return twitter.userOperations().getUserProfile().getScreenName();
     }
     
-   public void retrieveTweet(String hashtag, String lat, String lng, int radius){
+   public void retrieveTweet(String hashtag, String lat, String lng, int radius, String query){
     
     Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
@@ -158,7 +158,7 @@ public class TwitterCollector {
                 element.isRetweet(),
                 element.getRetweetCount(),
                 profile.getScreenName(),//.getName(), //
-                hashtag,
+                query,
                 element.getEntities().getUrls(),
                 element.getEntities().getHashTags(),
                 element.getEntities().getMentions(),
