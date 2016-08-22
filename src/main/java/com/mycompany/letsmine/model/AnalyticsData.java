@@ -5,10 +5,35 @@
  */
 package com.mycompany.letsmine.model;
 
+import java.util.HashMap;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 /**
  *
  * @author michaelfouche
  */
+@Document(collection = "AnalyticsData")
 public class AnalyticsData {
+    
+    HashMap<String, Integer> tagCloudHashMap;
+
+    public AnalyticsData() {
+    }
+
+    public AnalyticsData(HashMap<String, Integer> tagCloudHashMap) {
+        this.tagCloudHashMap = tagCloudHashMap;
+    }
+
+    
+    
+    public HashMap<String, Integer> getTagCloudHashMap() {
+        return tagCloudHashMap;
+    }
+
+    public void setTagCloudHashMap(HashMap<String, Integer> tagCloudHashMap) {
+        this.tagCloudHashMap = tagCloudHashMap;
+    }
+    
+    
     
 }

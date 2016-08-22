@@ -49,15 +49,15 @@
                                  
                                  <td>
                                      <form action="analyticsRequest.html" method="get" id="queryTextArea">
-                                    <fieldset>
-                                        <select name="analyticsChoice">
-                                            <c:forEach items="${comboAnalytics}" var="id">
-                                                <option value="${id}">${id}</option>
-                                            </c:forEach>
-                                        </select>
-                                        <input type="hidden" name="resultMessage" value=${userQuery}>
-                                        <input type="submit" value="Convert for report">
-                                    </fieldset>
+                                        <fieldset>
+                                            <select name="analyticsChoice">
+                                                <c:forEach items="${comboAnalytics}" var="id">
+                                                    <option value="${id}">${id}</option>
+                                                </c:forEach>
+                                            </select>
+                                            <input type="hidden" name="resultMessage" value="${userQuery}">
+                                            <input type="submit" value="Convert for report">
+                                        </fieldset>
                                      </form>
                                  </td>  
                              </tr> 

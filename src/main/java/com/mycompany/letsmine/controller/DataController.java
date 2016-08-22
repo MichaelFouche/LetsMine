@@ -15,6 +15,7 @@ import com.mycompany.letsmine.geoCode.Result;
 import com.mycompany.letsmine.model.QueryValues.QueryValues;
 import com.mycompany.letsmine.model.TweetData;
 import com.mycompany.letsmine.model.User;
+import com.mycompany.letsmine.service.AnalyticsTagCloudService;
 import com.mycompany.letsmine.service.CollectorThreadService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +51,7 @@ public class DataController {
     private TwitterCollector twitterCollector;
     private User user;
     private TweetDataService tweetData;
+    private AnalyticsTagCloudService analyticsTagCloudService;
     
     private String loggedInUser;
     private List uniqueUsers;
@@ -61,6 +63,7 @@ public class DataController {
          user =  (User)context.getBean("User");
          user.setUsername(twitterCollector.retrieveUserProfile());
          tweetData =  (TweetDataService)context.getBean("TweetDataService");
+         analyticsTagCloudService =  (AnalyticsTagCloudService)context.getBean("AnalyticsTagCloudService");
          
          System.out.println("in Constructor*******************");
     }
@@ -120,29 +123,29 @@ public class DataController {
         
         for(String thisUser: usersFromDB)
         {
-            User user = new User(thisUser);
-            listOfUsers.add(user);
+            User uniqueUser = new User(thisUser);
+            listOfUsers.add(uniqueUser);
         }
         return listOfUsers;
     }
     
-    private List<User> getQueriesForUsers(List<User> users){ 
-        for(User thisUser: users)
+    private List<User> getQueriesForUsers(List<User> uniqueUsers){ 
+        for(User thisUniqueUser: uniqueUsers)
         {            
             DBObject dbObject = new BasicDBObject();
-            dbObject.put("letsMineUser",thisUser.getUsername());
+            dbObject.put("letsMineUser",thisUniqueUser.getUsername());
             List bySearchQuery = tweetData.findByQuery("searchQuery",dbObject);
-            thisUser.setQueries(bySearchQuery);
+            thisUniqueUser.setQueries(bySearchQuery);
         }
-        return users;
+        return uniqueUsers;
     }
     private void RetrieveUsersWithQueries(){
         loggedInUser = (String)user.getUsername();
-        System.out.println("loggedInUser: "+loggedInUser);
+        //System.out.println("loggedInUser: "+loggedInUser);
         uniqueUsers = getUniqueUsers();
-        System.out.println("Users: "+uniqueUsers);
+        //System.out.println("Users: "+uniqueUsers);
         uniqueUsersWithQueries = getQueriesForUsers(uniqueUsers);
-        System.out.println("Queries by: "+uniqueUsersWithQueries);
+        //System.out.println("Queries by: "+uniqueUsersWithQueries);
     }
     
     private List getAllTweets()
@@ -216,12 +219,24 @@ public class DataController {
     public String analyticsViewWithRequest(Model model,@RequestParam("analyticsChoice") String analyticsChoice,@RequestParam("resultMessage") String resultMessage){ 
         model.addAttribute("headingHTML", headingHTML);   
         
-        if(!resultMessage.equals("")){
+        if(analyticsChoice.equals("Tag Cloud")){
           //Do Query
-          System.out.println("...Do Analytics...");
+          System.out.println("...Do Analytics...\nwith: "+resultMessage);
           
+          String returnedMessage = analyticsTagCloudService.conductTagCloudAnalytics(resultMessage);
+          if(returnedMessage.equals("true"))
+          {
+              resultMessage = "<font color=\"green\">"+analyticsChoice + " Analytics Performed for <br>Query: " +resultMessage+"<br></font><br>";
+          }
+          else
+          {
+              resultMessage = "<font color=\"red\">"+analyticsChoice + " Analytics Algorithm had errors with <br>Query: " +resultMessage+"<br>Error message: "+returnedMessage+"<br></font><br>";
+          }
           //add to text with response
-          resultMessage = "<font color=\"green\">"+analyticsChoice + " Analytics Performed for " +resultMessage+"<br></font><br>";
+          
+        }
+        else{
+            resultMessage = "<font color=\"red\">"+analyticsChoice + " Not yet implemented, please choose another algorithm for: <br>Query: " +resultMessage+"<br></font><br>";
         }
         
         List comboAnalytics = new ArrayList();

@@ -45,10 +45,11 @@
                                  <td>
                                      <form action="queryManagerRequest.html" method="get" id="queryTextArea">
                                     <fieldset>
-                                        <input type="hidden" name="resultMessage" value=${userQuery}>
+                                        <input type="hidden" name="resultMessage" value="${userQuery}">
                                         <input type="submit" value="Retrieve more values">
                                     </fieldset>
                                      </form>
+                                        
                                  </td>  
                              </tr> 
                          </c:forEach> 
