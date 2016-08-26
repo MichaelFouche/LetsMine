@@ -13,7 +13,6 @@ import com.mongodb.DBObject;
  *
  * @author michaelfouche
  */
-
 public interface TweetDataService {
     public List<TweetData> getAllTweets();
     public List findByField(String key);

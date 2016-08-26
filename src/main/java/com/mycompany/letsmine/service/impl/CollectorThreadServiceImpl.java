@@ -24,7 +24,7 @@ public class CollectorThreadServiceImpl implements CollectorThreadService, Runna
     }
 
     public CollectorThreadServiceImpl(){
-    
+    //hibernate
     }
     
     private void retrieveTweetsThread(){

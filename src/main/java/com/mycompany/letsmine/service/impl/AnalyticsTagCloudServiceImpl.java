@@ -30,25 +30,27 @@ import org.springframework.social.twitter.api.HashTagEntity;
  */
 public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
 
-    ApplicationContext ctx;
-    MongoOperations mongoOperation;
-    User user;
-    HashMap<String, Integer> tagCloudHashMap;
-    AnalyticsData analyticsData;
-    
+    private ApplicationContext mongoContext;
+    private MongoOperations mongoOperation;
+    private User mongoUser;
+    private HashMap<String, Integer> tagCloudHashMap;
+    private AnalyticsData analyticsData;    
+    private ApplicationContext context;
 //    analyticsData.
   //  private static final String COLLECTION = "tweetdata"; 
     
-     public AnalyticsTagCloudServiceImpl() {
-        ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
-        mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");
-        user = new User("mkyong", "password123");
-        
+     public AnalyticsTagCloudServiceImpl() {         
+         //hibernate        
+    }
+     /*mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+        mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");  
+        context = new ClassPathXmlApplicationContext("beans.xml");       
+        mongoUser = (User)context.getBean("MongoUser");
+       */ 
         //ApplicationContext contextApp = new ClassPathXmlApplicationContext("beans.xml");
         //analyticsData =  (AnalyticsData)contextApp.getBean("AnalyticsData");
         
         //analyticsData.setTagCloudHashMap(new HashMap<String, Integer>());
-    }
     
     @Override
     public String conductTagCloudAnalytics(String query) {

@@ -14,9 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
-import static org.springframework.data.util.ClassTypeInformation.COLLECTION;
 
 /**
  *
@@ -25,26 +24,27 @@ import static org.springframework.data.util.ClassTypeInformation.COLLECTION;
 
 public class TweetDataServiceImpl implements TweetDataService{
 
-    ApplicationContext ctx;
-    MongoOperations mongoOperation;
-    User user;
+//    private ApplicationContext mongoContext;
+//    private MongoOperations mongoOperation;
+//    private User mongoUser;    
+//    private ApplicationContext context;
      
     private static final String COLLECTION = "tweetdata";   
+    
     
     @Override
     public List<TweetData> getAllTweets() {
         return getTweetData();
     }
 
-    public TweetDataServiceImpl() {
-        ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
-        mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");
-        user = new User("mkyong", "password123");
+    public TweetDataServiceImpl() {        
+        //Hibernate
     }
-    
-    
-    
+        
     private List<TweetData> getTweetData(){
+        ApplicationContext mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+        MongoOperations mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
+        
         List<TweetData> tweetData = new ArrayList<TweetData>();
         tweetData = mongoOperation.findAll(TweetData.class);
         return tweetData;
@@ -53,11 +53,17 @@ public class TweetDataServiceImpl implements TweetDataService{
     
     @Override
     public List findByField(String field) {
+        ApplicationContext mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+        MongoOperations mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
+        
         return mongoOperation.getCollection(COLLECTION).distinct(field);
     }
 
     @Override
     public List findByQuery(String field, DBObject dbObject) {
+        ApplicationContext mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+        MongoOperations mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
+        
         return mongoOperation.getCollection(COLLECTION)
             .distinct(field, dbObject);
     }

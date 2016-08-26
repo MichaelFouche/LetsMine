@@ -38,7 +38,7 @@ public class StreamService {
             @Override
             public void onWarning(StreamWarningEvent warningEvent) {
                 // TODO Auto-generated method stub
-
+                System.out.println("TWITTER WARNING MESSAGE: "+warningEvent.getMessage());
             }
 
             @Override
@@ -51,7 +51,7 @@ public class StreamService {
 
             @Override
             public void onLimit(int numberOfLimitedTweets) {
-                System.out.println("");
+                System.out.println("TWITTER - Reached the max limit: :"+numberOfLimitedTweets);
 
             }
 
