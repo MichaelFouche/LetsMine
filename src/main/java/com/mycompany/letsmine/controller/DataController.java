@@ -133,7 +133,7 @@ public class DataController {
             dbObject.put("letsMineUser",thisUniqueUser.getUsername());
             List bySearchQuery = tweetDataService.findByQuery("searchQuery",dbObject);
             thisUniqueUser.setQueries(bySearchQuery);
-        }
+        } 
         return uniqueUsers;
     }
     private void RetrieveUsersWithQueries(){
