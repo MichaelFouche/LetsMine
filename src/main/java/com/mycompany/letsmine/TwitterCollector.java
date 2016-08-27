@@ -36,12 +36,7 @@ public class TwitterCollector {
     MongoOperations mongoOperation;
 
     public TwitterCollector() {
-        //MONGODB
-        //Connect to database and test CRUD
-        mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
-        mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
-        //setKeys("hAdjsGaCHIxVlxmkh3kwu3v3D","vr8RwBl5Ry42gnReysvGYTMJtr2kmMkcMFgype7ih1jAnnCVn0", "53678997-qI0CgAlJNf4vbukF5g7nna9E50EV5BLiEop3iPpZ2","4uXUK3Lq7X4a02HjuNAiBcO1p4hSJGtDaiwgSG4BkYaAc" );
-    
+        //Hibernate
     }
     
     public String getConsumerKey() {
@@ -89,12 +84,15 @@ public class TwitterCollector {
     }
     
     public String retrieveUserProfile(){
+        
         Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
         return twitter.userOperations().getUserProfile().getScreenName();
     }
     
    public void retrieveTweet(String hashtag, String lat, String lng, int radius, String query){
     try{
+    mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+    mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
     Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
     TwitterProfile profile = twitter.userOperations().getUserProfile();

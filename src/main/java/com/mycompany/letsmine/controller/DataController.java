@@ -56,9 +56,9 @@ public class DataController {
     }
     private void retrieveValues(){
          context = new ClassPathXmlApplicationContext("beans.xml");
-         //twitterCollector =  (TwitterCollector) context.getBean("TwitterCollector");
-         //user =  (User)context.getBean("User");
-         //user.setUsername(twitterCollector.retrieveUserProfile());
+         twitterCollector =  (TwitterCollector) context.getBean("TwitterCollector");
+         //
+         //
          tweetDataService =  (TweetDataService)context.getBean("TweetDataService");
         // analyticsTagCloudService =  (AnalyticsTagCloudService)context.getBean("AnalyticsTagCloudService");
          
@@ -137,9 +137,11 @@ public class DataController {
         return uniqueUsers;
     }
     private void RetrieveUsersWithQueries(){
-        loggedInUser = "";//(String)user.getUsername();
-        uniqueUsers = new ArrayList();//getUniqueUsers();
-        uniqueUsersWithQueries = new ArrayList();//= getQueriesForUsers(uniqueUsers);
+        user =  (User)context.getBean("User");
+        user.setUsername(twitterCollector.retrieveUserProfile());
+        loggedInUser = (String)user.getUsername();
+        uniqueUsers = getUniqueUsers();
+        uniqueUsersWithQueries = getQueriesForUsers(uniqueUsers);
     }
     
     private List getAllTweets()
