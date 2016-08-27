@@ -5,24 +5,16 @@
  */
 package com.mycompany.letsmine.service.impl;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mycompany.letsmine.config.SpringMongoConfig;
 import com.mycompany.letsmine.model.AnalyticsData;
 import com.mycompany.letsmine.model.TweetData;
 import com.mycompany.letsmine.model.User;
 import com.mycompany.letsmine.service.AnalyticsTagCloudService;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.social.twitter.api.HashTagEntity;
 
 /**
  *

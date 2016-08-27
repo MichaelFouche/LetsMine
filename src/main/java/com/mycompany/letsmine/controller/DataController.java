@@ -8,30 +8,22 @@ package com.mycompany.letsmine.controller;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mycompany.letsmine.TwitterCollector;
-import com.mycompany.letsmine.config.SpringMongoConfig;
 import com.mycompany.letsmine.geoCode.AddressConverter;
 import com.mycompany.letsmine.geoCode.GoogleResponse;
 import com.mycompany.letsmine.geoCode.Result;
 import com.mycompany.letsmine.model.QueryValues.QueryValues;
-import com.mycompany.letsmine.model.TweetData;
 import com.mycompany.letsmine.model.User;
 import com.mycompany.letsmine.service.AnalyticsTagCloudService;
-import com.mycompany.letsmine.service.CollectorThreadService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.mycompany.letsmine.service.TweetDataService;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Resource;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 /**
  *
  * @author michaelfouche
@@ -50,7 +42,7 @@ public class DataController {
     private ApplicationContext context;
     private TwitterCollector twitterCollector;
     private User user;
-    private TweetDataService tweetData;
+    private TweetDataService tweetDataService;
     private AnalyticsTagCloudService analyticsTagCloudService;
     
     private String loggedInUser;
@@ -58,16 +50,21 @@ public class DataController {
     private List uniqueUsersWithQueries;
     
     public DataController(){ 
+         //Hibernate
+         
+         retrieveValues();
+    }
+    private void retrieveValues(){
          context = new ClassPathXmlApplicationContext("beans.xml");
-         twitterCollector =  (TwitterCollector) context.getBean("TwitterCollector");
-         user =  (User)context.getBean("User");
-         user.setUsername(twitterCollector.retrieveUserProfile());
-         tweetData =  (TweetDataService)context.getBean("TweetDataService");
-         analyticsTagCloudService =  (AnalyticsTagCloudService)context.getBean("AnalyticsTagCloudService");
+         //twitterCollector =  (TwitterCollector) context.getBean("TwitterCollector");
+         //user =  (User)context.getBean("User");
+         //user.setUsername(twitterCollector.retrieveUserProfile());
+         tweetDataService =  (TweetDataService)context.getBean("TweetDataService");
+        // analyticsTagCloudService =  (AnalyticsTagCloudService)context.getBean("AnalyticsTagCloudService");
          
          System.out.println("in Constructor*******************");
     }
-    
+   
    
     
     @RequestMapping(value = "/query", method = RequestMethod.GET)    
@@ -117,7 +114,7 @@ public class DataController {
     }
     
     private List<User> getUniqueUsers(){
-        List<String> usersFromDB = tweetData.findByField("letsMineUser");
+        List<String> usersFromDB = tweetDataService.findByField("letsMineUser");
         System.out.println("usersFromDB"+usersFromDB);
         List<User> listOfUsers = new ArrayList();
         
@@ -134,23 +131,20 @@ public class DataController {
         {            
             DBObject dbObject = new BasicDBObject();
             dbObject.put("letsMineUser",thisUniqueUser.getUsername());
-            List bySearchQuery = tweetData.findByQuery("searchQuery",dbObject);
+            List bySearchQuery = tweetDataService.findByQuery("searchQuery",dbObject);
             thisUniqueUser.setQueries(bySearchQuery);
         }
         return uniqueUsers;
     }
     private void RetrieveUsersWithQueries(){
-        loggedInUser = (String)user.getUsername();
-        //System.out.println("loggedInUser: "+loggedInUser);
-        uniqueUsers = getUniqueUsers();
-        //System.out.println("Users: "+uniqueUsers);
-        uniqueUsersWithQueries = getQueriesForUsers(uniqueUsers);
-        //System.out.println("Queries by: "+uniqueUsersWithQueries);
+        loggedInUser = "";//(String)user.getUsername();
+        uniqueUsers = new ArrayList();//getUniqueUsers();
+        uniqueUsersWithQueries = new ArrayList();//= getQueriesForUsers(uniqueUsers);
     }
     
     private List getAllTweets()
     {
-       return tweetData.getAllTweets();
+       return tweetDataService.getAllTweets();
     }
     
     @RequestMapping(value = "/queryManager", method = RequestMethod.GET) 
@@ -328,6 +322,8 @@ public class DataController {
     }
     
     public void doTweetCollector(QueryValues queryValues){ 
+        context = new ClassPathXmlApplicationContext("beans.xml");
+        twitterCollector =  (TwitterCollector) context.getBean("TwitterCollector");
         twitterCollector.retrieveTweet(queryValues.getHashtagValue(), queryValues.getLat(), queryValues.getLng(), queryValues.getRadiusValue(), queryValues.getQuery());         
     }
     
