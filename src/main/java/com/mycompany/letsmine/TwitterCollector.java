@@ -116,7 +116,7 @@ public class TwitterCollector {
     .geoCode(new GeoCode(Double.parseDouble(lat), Double.parseDouble(lng), radius, GeoCode.Unit.KILOMETER))
     //.lang("af")
     //.resultType(SearchParameters.ResultType.MIXED)//mixed recent popular
-    .count(15)//max 100,default 15
+    .count(35)//max 100,default 15
     //.until(untilDate)
     .includeEntities(true)//media, urls, user mentions, hashtags, symbols
     //.maxId(Long.parseLong(tweetID))

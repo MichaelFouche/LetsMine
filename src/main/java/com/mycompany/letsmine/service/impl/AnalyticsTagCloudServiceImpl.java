@@ -80,14 +80,14 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
                         if(!analyticsData.getTagCloudHashMap().isEmpty())
                         {
                             System.out.println("InFOR");
-                            if(analyticsData.getTagCloudHashMap().values().contains(hashTagValue)){//containskey
+                            if(analyticsData.getTagCloudHashMap().containsKey(hashTagValue)){//containskey
                                 value = analyticsData.getTagCloudHashMap().get(hashTagValue);
                                 System.out.println("value:"+value);
-                                System.out.println("");
+                                System.out.println(""+value);
                             }
                         }
 
-                        value ++;
+                        value +=1;
 
                         //not put, but set
                         analyticsData.getTagCloudHashMap().put(i.getText(), value);
