@@ -66,32 +66,33 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
             List<TweetData> tweetData = findByQuery(query);
             //loop through them and do calculations            
             for(TweetData item:tweetData){
-                System.out.println(item.getText());
-                List<HashTagEntity> theHashtagList = item.getTags();                        
-                for(HashTagEntity i:theHashtagList)
+                if(item.getSearchQuery().equals(query)&& item.getLetsMineUser().equals(user))
                 {
-                    String hashTagValue = i.getText();
-                    
-                    value = 0;
-                    System.out.println("Map: "+analyticsData.getTagCloudHashMap()=="null");
-                    if(!analyticsData.getTagCloudHashMap().isEmpty())
+                    //test whether the right amount of tweets coming through
+                    //System.out.println(item.getLetsMineUser()+"QUERY "+item.getSearchQuery()+ "TEXT"+item.getText());
+                    List<HashTagEntity> theHashtagList = item.getTags();                        
+                    for(HashTagEntity i:theHashtagList)
                     {
-                        System.out.println("InFOR");
-                        if(analyticsData.getTagCloudHashMap().values().contains(hashTagValue)){//containskey
-                            value = analyticsData.getTagCloudHashMap().get(hashTagValue);
-                        }
-                        else
-                        {
+                        String hashTagValue = i.getText();
+
                         value = 0;
+                        
+                        if(!analyticsData.getTagCloudHashMap().isEmpty())
+                        {
+                            System.out.println("InFOR");
+                            if(analyticsData.getTagCloudHashMap().values().contains(hashTagValue)){//containskey
+                                value = analyticsData.getTagCloudHashMap().get(hashTagValue);
+                                System.out.println("value:"+value);
+                                System.out.println("");
+                            }
                         }
+
+                        value ++;
+
+                        //not put, but set
+                        analyticsData.getTagCloudHashMap().put(i.getText(), value);
                     }
-                    
-                    value ++;
-                    
-                    //not put, but set
-                    analyticsData.getTagCloudHashMap().put(i.getText(), value);
                 }
-                
             }
             
             
@@ -114,8 +115,10 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
  //       }
 //        catch(Exception e){
 //            returnMessage = ""+e;
-//        }            
+//        }   
+
         return returnMessage;
+            
     }
     
     @Override
