@@ -17,5 +17,5 @@ import java.util.List;
 public interface AnalyticsTagCloudService {
     public List findByField(String key);
     public List<TweetData> findByQuery(String query);
-    public String conductTagCloudAnalytics(String query);
+    public String conductTagCloudAnalytics(String query, String user);
 }

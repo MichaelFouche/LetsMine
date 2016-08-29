@@ -16,14 +16,34 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class AnalyticsData {
     
     HashMap<String, Integer> tagCloudHashMap;
+    String query;
+    String user;
 
     public AnalyticsData() {
+        //hibernate
     }
 
     public AnalyticsData(HashMap<String, Integer> tagCloudHashMap) {
         this.tagCloudHashMap = tagCloudHashMap;
     }
 
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    
     
     
     public HashMap<String, Integer> getTagCloudHashMap() {

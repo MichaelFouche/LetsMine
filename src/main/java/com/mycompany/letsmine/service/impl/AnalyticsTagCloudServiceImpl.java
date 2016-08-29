@@ -45,16 +45,17 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
        */ 
         
         
-        //analyticsData.setTagCloudHashMap(new HashMap<String, Integer>());
+        
     
     @Override
-    public String conductTagCloudAnalytics(String query) {
+    public String conductTagCloudAnalytics(String query, String user) {
         String returnMessage = "";
         Integer value;
         mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
         mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");  
         ApplicationContext contextApp = new ClassPathXmlApplicationContext("beans.xml");
         analyticsData =  (AnalyticsData)contextApp.getBean("AnalyticsData");
+        analyticsData.setTagCloudHashMap(new HashMap<String, Integer>());
 //        try{
            //retrieve relevant data/tweetData objects
             String field = "tags";
@@ -71,14 +72,23 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
                 {
                     String hashTagValue = i.getText();
                     
-                    
-                    if(analyticsData.getTagCloudHashMap().values().contains(hashTagValue)){//containskey
-                    value = analyticsData.getTagCloudHashMap().get(hashTagValue);
-                    }
-                    else{
+                    value = 0;
+                    System.out.println("Map: "+analyticsData.getTagCloudHashMap()=="null");
+                    if(!analyticsData.getTagCloudHashMap().isEmpty())
+                    {
+                        System.out.println("InFOR");
+                        if(analyticsData.getTagCloudHashMap().values().contains(hashTagValue)){//containskey
+                            value = analyticsData.getTagCloudHashMap().get(hashTagValue);
+                        }
+                        else
+                        {
                         value = 0;
+                        }
                     }
+                    
                     value ++;
+                    
+                    //not put, but set
                     analyticsData.getTagCloudHashMap().put(i.getText(), value);
                 }
                 
@@ -94,6 +104,8 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
 
             
             //store into new collection (mongo)
+            analyticsData.setUser(user);
+            analyticsData.setQuery(query);
             mongoOperation.save(analyticsData);
             
 

@@ -229,8 +229,11 @@ public class DataController {
           //Do Query
           System.out.println("...Do Analytics...\nwith: "+resultMessage);
           
+          user =  (User)context.getBean("User");
+          user.setUsername(twitterCollector.retrieveUserProfile());
+          loggedInUser = (String)user.getUsername();
           analyticsTagCloudService =  (AnalyticsTagCloudService)context.getBean("AnalyticsTagCloudService");
-          String returnedMessage = analyticsTagCloudService.conductTagCloudAnalytics(resultMessage);
+          String returnedMessage = analyticsTagCloudService.conductTagCloudAnalytics(resultMessage, loggedInUser);
           if(returnedMessage.equals("true"))
           {
               resultMessage = "<font color=\"green\">"+analyticsChoice + " Analytics Performed for <br>Query: " +resultMessage+"<br></font><br>";
