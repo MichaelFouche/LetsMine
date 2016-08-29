@@ -27,6 +27,7 @@
     </bean>
     
     <bean id="User" class="com.mycompany.letsmine.model.User"/> 
+    <bean id="AnalyticsData" class="com.mycompany.letsmine.model.AnalyticsData"/> 
     
     <bean id="MongoUser" class="com.mycompany.letsmine.model.User">
         <property name="username" value="mkyong"/>

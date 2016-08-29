@@ -5,16 +5,21 @@
  */
 package com.mycompany.letsmine.service.impl;
 
+import com.mycompany.letsmine.config.SpringMongoConfig;
 import com.mycompany.letsmine.model.AnalyticsData;
 import com.mycompany.letsmine.model.TweetData;
 import com.mycompany.letsmine.model.User;
 import com.mycompany.letsmine.service.AnalyticsTagCloudService;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.social.twitter.api.HashTagEntity;
 
 /**
  *
@@ -34,13 +39,11 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
      public AnalyticsTagCloudServiceImpl() {         
          //hibernate        
     }
-     /*mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
-        mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");  
+     /*
         context = new ClassPathXmlApplicationContext("beans.xml");       
         mongoUser = (User)context.getBean("MongoUser");
        */ 
-        //ApplicationContext contextApp = new ClassPathXmlApplicationContext("beans.xml");
-        //analyticsData =  (AnalyticsData)contextApp.getBean("AnalyticsData");
+        
         
         //analyticsData.setTagCloudHashMap(new HashMap<String, Integer>());
     
@@ -48,6 +51,10 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
     public String conductTagCloudAnalytics(String query) {
         String returnMessage = "";
         Integer value;
+        mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+        mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");  
+        ApplicationContext contextApp = new ClassPathXmlApplicationContext("beans.xml");
+        analyticsData =  (AnalyticsData)contextApp.getBean("AnalyticsData");
 //        try{
            //retrieve relevant data/tweetData objects
             String field = "tags";
@@ -57,12 +64,14 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
             //  List<TweetData> tweetData =  dBCursor;
             List<TweetData> tweetData = findByQuery(query);
             //loop through them and do calculations            
-      /*      for(TweetData item:tweetData){
+            for(TweetData item:tweetData){
                 System.out.println(item.getText());
                 List<HashTagEntity> theHashtagList = item.getTags();                        
                 for(HashTagEntity i:theHashtagList)
                 {
                     String hashTagValue = i.getText();
+                    
+                    
                     if(analyticsData.getTagCloudHashMap().values().contains(hashTagValue)){//containskey
                     value = analyticsData.getTagCloudHashMap().get(hashTagValue);
                     }
@@ -87,7 +96,7 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
             //store into new collection (mongo)
             mongoOperation.save(analyticsData);
             
-*/
+
             //report take it from there.
             returnMessage = "true";
  //       }

@@ -60,7 +60,7 @@ public class DataController {
          //
          //
          tweetDataService =  (TweetDataService)context.getBean("TweetDataService");
-        // analyticsTagCloudService =  (AnalyticsTagCloudService)context.getBean("AnalyticsTagCloudService");
+        // 
          
          System.out.println("in Constructor*******************");
     }
@@ -178,7 +178,17 @@ public class DataController {
         
         if(!resultMessage.equals("")){
           //Do Query
-          System.out.println("...Do Query...");
+          if(!resultMessage.contains("twitter"))
+            {
+                error += "The datamining network is not yet supported\nCurrently only Twitter is supported";
+            }
+            else{
+                QueryValues queryValues = interpretQuery(resultMessage);
+                if(error.equals(""))
+                {
+                    doTweetCollector(queryValues); 
+                }
+            }
           
           //add to text with response
           resultMessage = "<font color=\"green\">"+resultMessage+"<br>Query Performed</font><br>";
@@ -219,6 +229,7 @@ public class DataController {
           //Do Query
           System.out.println("...Do Analytics...\nwith: "+resultMessage);
           
+          analyticsTagCloudService =  (AnalyticsTagCloudService)context.getBean("AnalyticsTagCloudService");
           String returnedMessage = analyticsTagCloudService.conductTagCloudAnalytics(resultMessage);
           if(returnedMessage.equals("true"))
           {
