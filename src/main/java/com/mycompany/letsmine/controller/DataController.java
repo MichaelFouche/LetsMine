@@ -8,9 +8,11 @@ package com.mycompany.letsmine.controller;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mycompany.letsmine.TwitterCollector;
+import com.mycompany.letsmine.config.SpringMongoConfig;
 import com.mycompany.letsmine.geoCode.AddressConverter;
 import com.mycompany.letsmine.geoCode.GoogleResponse;
 import com.mycompany.letsmine.geoCode.Result;
+import com.mycompany.letsmine.model.AnalyticsData;
 import com.mycompany.letsmine.model.QueryValues.QueryValues;
 import com.mycompany.letsmine.model.User;
 import com.mycompany.letsmine.service.AnalyticsTagCloudService;
@@ -18,9 +20,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.mycompany.letsmine.service.TweetDataService;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -277,22 +283,42 @@ public class DataController {
         return "reporting"; 
     } 
     
+    private HashMap<String, Integer> getTagCloud(String query, String user){
+        ApplicationContext mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+        MongoOperations mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
+        
+        DBObject dbObject = new BasicDBObject();
+            dbObject.put("query",query);
+        //loggedinuser and query
+            
+        List<HashMap<String, Integer>>  analyticsData = mongoOperation.getCollection("AnalyticsData").distinct("tagCloudHashMap", dbObject);
+        System.out.println(""+analyticsData);
+        HashMap<String, Integer> tagCloudHashMap = analyticsData.get(0);
+        return tagCloudHashMap;
+    }
     
     @RequestMapping(value = "/tagCloud", method = RequestMethod.GET)    
     public String getTagCloudView(Model model){ 
         model.addAttribute("headingHTML", headingHTML);    
+        //read values from the db using the query and user
         
-        int[] scoreList = {5,2,5,7,4,5,2,5,7,4};
-        String[] nameList = {"Google","Facebook","Skype","Instagram","LetsMine","Google","Facebook","Skype","Instagram","LetsMine"};
-        String[] linkList = {"#","#","#","#","#","#","#","#","#","#"};
+        HashMap<String, Integer> tagCloudHashMap = getTagCloud("DATAMINE twitter HASHTAG takealot FROM Cape Town RADIUS 2000", "mfouche91");
+        Iterator<String> keySetIterator = tagCloudHashMap.keySet().iterator(); 
+        
+        
+        
+//        int[] scoreList = {5,2,5,7,4,5,2,5,7,4};
+//        String[] nameList = {"Google","Facebook","Skype","Instagram","LetsMine","Google","Facebook","Skype","Instagram","LetsMine"};
+//        String[] linkList = {"#","#","#","#","#","#","#","#","#","#"};
         
         String html = ""; 
         int i=1; 
         int tagsPerLine = 4; 
-        for(int x=0;x<scoreList.length;x++) 
-        { 
-          int score = scoreList[x]; 
-          html+="<a href="+linkList[x]+" style=font-size:"+(score*7)+"px;>"+nameList[x]+"</a> "; 
+        
+        while(keySetIterator.hasNext()){ 
+            String key = keySetIterator.next(); 
+            System.out.println("***"+tagCloudHashMap.get(key));
+          html+="<a href="+key+" style=font-size:"+((tagCloudHashMap.get(key)*7)+5)+"px;>"+key+"</a> "; 
           if(i%tagsPerLine ==0) 
           { 
            html+="<br>"; 
