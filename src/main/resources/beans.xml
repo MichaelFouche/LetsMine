@@ -36,7 +36,8 @@
     
     <bean id="TweetDataService" class="com.mycompany.letsmine.service.impl.TweetDataServiceImpl"/> 
     <bean id="CollectorThreadService" class="com.mycompany.letsmine.service.impl.CollectorThreadServiceImpl"/>  
-    <bean id="AnalyticsTagCloudService" class="com.mycompany.letsmine.service.impl.AnalyticsTagCloudServiceImpl"/>  
+    <bean id="AnalyticsTagCloudService" class="com.mycompany.letsmine.service.impl.AnalyticsTagCloudServiceImpl"/>
+    <bean id="ReportService" class="com.mycompany.letsmine.service.impl.ReportServiceImpl"/>  
     
     
 </beans>

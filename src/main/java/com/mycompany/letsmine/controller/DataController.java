@@ -16,6 +16,7 @@ import com.mycompany.letsmine.model.AnalyticsData;
 import com.mycompany.letsmine.model.QueryValues.QueryValues;
 import com.mycompany.letsmine.model.User;
 import com.mycompany.letsmine.service.AnalyticsTagCloudService;
+import com.mycompany.letsmine.service.ReportService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.mycompany.letsmine.service.TweetDataService;
@@ -132,22 +133,20 @@ public class DataController {
         return listOfUsers;
     }
     
-    private List<User> getQueriesForUsers(List<User> uniqueUsers){ 
+    private List<User> getQueriesForUsers(List<User> uniqueUsers, String collection){ 
         for(User thisUniqueUser: uniqueUsers)
         {            
             DBObject dbObject = new BasicDBObject();
             dbObject.put("letsMineUser",thisUniqueUser.getUsername());
-            List bySearchQuery = tweetDataService.findByQuery("searchQuery",dbObject);
+            List bySearchQuery = tweetDataService.findByQuery("searchQuery",dbObject, collection);
             thisUniqueUser.setQueries(bySearchQuery);
         } 
         return uniqueUsers;
     }
-    private void RetrieveUsersWithQueries(){
-        user =  (User)context.getBean("User");
-        user.setUsername(twitterCollector.retrieveUserProfile());
-        loggedInUser = (String)user.getUsername();
+    private void RetrieveUsersWithQueries(String collection){
+        loggedInUser = getLoggedInUser();
         uniqueUsers = getUniqueUsers();
-        uniqueUsersWithQueries = getQueriesForUsers(uniqueUsers);
+        uniqueUsersWithQueries = getQueriesForUsers(uniqueUsers, collection);
     }
     
     private List getAllTweets()
@@ -159,7 +158,7 @@ public class DataController {
     public String queryManagerView(Model model){ 
         model.addAttribute("headingHTML", headingHTML);
         
-        RetrieveUsersWithQueries();
+        RetrieveUsersWithQueries("tweetdata");
         
         //select user and request to display request data
                
@@ -200,7 +199,7 @@ public class DataController {
           resultMessage = "<font color=\"green\">"+resultMessage+"<br>Query Performed</font><br>";
         }
         
-        RetrieveUsersWithQueries();
+        RetrieveUsersWithQueries("tweetdata");
         
         //model.addAttribute("myQueryList", listDB); 
         //<jsp:useBean id="myQueryList" scope="request" type="java.util.List"/>
@@ -218,7 +217,7 @@ public class DataController {
         comboAnalytics.add("Tag Cloud");        
         comboAnalytics.add("Manager Report");
         
-        RetrieveUsersWithQueries();  
+        RetrieveUsersWithQueries("tweetdata");  
         model.addAttribute("loggedInUser", loggedInUser); 
         model.addAttribute("users", uniqueUsersWithQueries);  
         model.addAttribute("resultMessage", "");           
@@ -226,6 +225,8 @@ public class DataController {
         
         return "analytics"; 
     }
+    
+    
     
     @RequestMapping(value = "/analyticsRequest", method = RequestMethod.GET) 
     public String analyticsViewWithRequest(Model model,@RequestParam("analyticsChoice") String analyticsChoice,@RequestParam("resultMessage") String resultMessage){ 
@@ -235,9 +236,7 @@ public class DataController {
           //Do Query
           System.out.println("...Do Analytics...\nwith: "+resultMessage);
           
-          user =  (User)context.getBean("User");
-          user.setUsername(twitterCollector.retrieveUserProfile());
-          loggedInUser = (String)user.getUsername();
+          loggedInUser = getLoggedInUser();
           analyticsTagCloudService =  (AnalyticsTagCloudService)context.getBean("AnalyticsTagCloudService");
           String returnedMessage = analyticsTagCloudService.conductTagCloudAnalytics(resultMessage, loggedInUser);
           if(returnedMessage.equals("true"))
@@ -259,7 +258,7 @@ public class DataController {
         comboAnalytics.add("Tag Cloud");        
         comboAnalytics.add("Manager Report");
         
-        RetrieveUsersWithQueries();  
+        RetrieveUsersWithQueries("tweetdata");  
         model.addAttribute("loggedInUser", loggedInUser); 
         model.addAttribute("users", uniqueUsersWithQueries);  
         model.addAttribute("resultMessage", resultMessage);           
@@ -278,31 +277,30 @@ public class DataController {
 //        mongoOperation = (MongoOperations)ctx.getBean("mongoTemplate");
 //        
 //        List<TweetData> listDB = mongoOperation.findAll(TweetData.class);
-//        model.addAttribute("myQueryList", listDB);      
+//        model.addAttribute("myQueryList", listDB);   
+
+        List comboReport = new ArrayList();
+        comboReport.add("Display");       
         
+        RetrieveUsersWithQueries("AnalyticsData");  
+        model.addAttribute("loggedInUser", loggedInUser); 
+        model.addAttribute("users", uniqueUsersWithQueries);  
+        model.addAttribute("resultMessage", "");           
+        model.addAttribute("comboReport", comboReport); 
         return "reporting"; 
     } 
     
-    private HashMap<String, Integer> getTagCloud(String query, String user){
-        ApplicationContext mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
-        MongoOperations mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
-        
-        DBObject dbObject = new BasicDBObject();
-            dbObject.put("query",query);
-        //loggedinuser and query
-            
-        List<HashMap<String, Integer>>  analyticsData = mongoOperation.getCollection("AnalyticsData").distinct("tagCloudHashMap", dbObject);
-        System.out.println(""+analyticsData);
-        HashMap<String, Integer> tagCloudHashMap = analyticsData.get(0);
-        return tagCloudHashMap;
-    }
+    
     
     @RequestMapping(value = "/tagCloud", method = RequestMethod.GET)    
-    public String getTagCloudView(Model model){ 
+    public String getTagCloudView(Model model){//,@RequestParam("resultMessage") String resultMessage){ 
         model.addAttribute("headingHTML", headingHTML);    
         //read values from the db using the query and user
         
-        HashMap<String, Integer> tagCloudHashMap = getTagCloud("DATAMINE twitter HASHTAG takealot FROM Cape Town RADIUS 2000", "mfouche91");
+        ReportService reportService =  (ReportService)context.getBean("ReportService");
+        String query = "DATAMINE twitter HASHTAG takealot FROM Cape Town RADIUS 2000";
+        loggedInUser = getLoggedInUser();
+        HashMap<String, Integer> tagCloudHashMap = reportService.getTagCloud(query, loggedInUser);
         Iterator<String> keySetIterator = tagCloudHashMap.keySet().iterator(); 
         
         
@@ -361,6 +359,13 @@ public class DataController {
             System.out.println("ERROR: Retrieving location servlet: "+e);
         }
         return latlng;
+    }
+    private String getLoggedInUser(){
+        user =  (User)context.getBean("User");
+        if((String)user.getUsername()== null){
+             user.setUsername(twitterCollector.retrieveUserProfile());
+        }
+        return (String)user.getUsername();
     }
     
     public void doTweetCollector(QueryValues queryValues){ 

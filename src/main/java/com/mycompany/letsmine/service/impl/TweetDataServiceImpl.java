@@ -60,11 +60,11 @@ public class TweetDataServiceImpl implements TweetDataService{
     }
 
     @Override
-    public List findByQuery(String field, DBObject dbObject) {
+    public List findByQuery(String field, DBObject dbObject, String collection) {
         ApplicationContext mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
         MongoOperations mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
         
-        return mongoOperation.getCollection(COLLECTION)
+        return mongoOperation.getCollection(collection)
             .distinct(field, dbObject);
     }
 

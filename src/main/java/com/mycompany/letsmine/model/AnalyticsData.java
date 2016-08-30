@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class AnalyticsData {
     
     HashMap<String, Integer> tagCloudHashMap;
-    String query;
+    String searchQuery;
     String user;
 
     public AnalyticsData() {
@@ -28,11 +28,11 @@ public class AnalyticsData {
     }
 
     public String getQuery() {
-        return query;
+        return searchQuery;
     }
 
-    public void setQuery(String query) {
-        this.query = query;
+    public void setQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
     }
 
     public String getUser() {

@@ -5,17 +5,15 @@
  */
 package com.mycompany.letsmine.service;
 
-import com.mycompany.letsmine.model.TweetData;
-import java.util.List;
-import org.springframework.stereotype.Service;
 import com.mongodb.DBObject;
+import java.util.HashMap;
+import java.util.List;
+
 /**
  *
  * @author michaelfouche
  */
-public interface TweetDataService {
-    public List<TweetData> getAllTweets();
-    public List findByField(String key);
+public interface ReportService {
+    public HashMap<String, Integer> getTagCloud(String query, String user);
     public List findByQuery(String field, DBObject dbObject, String collection);
-    
 }
