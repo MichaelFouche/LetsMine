@@ -8,6 +8,7 @@ package com.mycompany.letsmine;
 import com.mycompany.letsmine.config.SpringMongoConfig;
 import com.mycompany.letsmine.model.TweetData;
 import com.mycompany.letsmine.model.User;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -34,6 +35,7 @@ public class TwitterCollector {
     private Twitter twitter;
     ApplicationContext mongoContext;
     MongoOperations mongoOperation;
+    
 
     public TwitterCollector() {
         //Hibernate
@@ -84,121 +86,114 @@ public class TwitterCollector {
     }
     
     public String retrieveUserProfile(){
-        
-        Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
-        return twitter.userOperations().getUserProfile().getScreenName();
+        try{
+            Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
+            return twitter.userOperations().getUserProfile().getScreenName();
+        }
+        catch(Exception e){
+            System.out.println("ERROR "+e);
+        }
+       return null;
+    }
+     public void retrieveTweet(String hashtag, String lat, String lng, int radius, String query){
+         //get tweet list from below
+         ArrayList<TweetData> tweetDataList = new ArrayList();
+         tweetDataList = retrieveTweetFromTwitter(hashtag, lat, lng, radius, query);
+         for(TweetData item: tweetDataList)
+         {
+             saveTweet(item);
+         }
+     }
+    
+    public ArrayList<TweetData> retrieveTweetFromTwitter(String hashtag, String lat, String lng, int radius, String query){
+        ArrayList<TweetData> tweetDataList = new ArrayList();
+        try{
+            mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+            mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
+            Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
+
+            TwitterProfile profile = twitter.userOperations().getUserProfile();
+
+            String profileId = twitter.userOperations().getScreenName();
+
+            System.out.println("Name: " + profile.getName()+ "Screen Name: "+profile.getScreenName());
+
+            System.out.println("" + profile.getProfileUrl());
+
+            //SearchResults results = twitter.searchOperations().search(profileId, 0);
+
+
+            /*SearchResults results = twitter.searchOperations().search("#HIMYM", 25);
+            List<Tweet> tweetList = results.getTweets();
+            for (Tweet element : tweetList) {
+                System.out.println("\tRT:"+element.isRetweet()+"|From:"+element.getFromUser()+"|Date:"+element.getCreatedAt()+" |Tweet: "+element.getText());
+            }*/
+            String tweetID = "760118695037403136";//need to populate data since it's only a week old
+            SearchResults resultsAdv = twitter.searchOperations().search(new SearchParameters(hashtag)
+            .geoCode(new GeoCode(Double.parseDouble(lat), Double.parseDouble(lng), radius, GeoCode.Unit.KILOMETER))
+            //.lang("af")
+            //.resultType(SearchParameters.ResultType.MIXED)//mixed recent popular
+            .count(35)//max 100,default 15
+            //.until(untilDate)
+            .includeEntities(true)//media, urls, user mentions, hashtags, symbols
+            //.maxId(Long.parseLong(tweetID))
+            //.sinceId(Long.parseLong(tweetID))
+            );
+
+            System.out.println("\n--------------\n");
+            List<Tweet> tweetListAdv = resultsAdv.getTweets();
+            for (Tweet element : tweetListAdv) {
+
+                TweetData tweetData = new TweetData(
+                        element.getId(),
+                        profile.getName(),
+                        element.getFromUser(),
+                        element.getFromUserId(),
+                        element.getInReplyToStatusId(),
+                        element.getInReplyToUserId(),
+                        element.getUser(),
+                        element.getCreatedAt(),
+                        element.getLanguageCode(),
+                        element.getText(),
+                        element.getInReplyToScreenName(),
+                        element.getProfileImageUrl(),
+                        element.getSource(),
+                        element.getUnmodifiedText(),
+                      //  element.getEntities(),
+                        element.getFavoriteCount(),
+                        element.hasMedia(),
+                        element.hasMentions(),
+                        element.hasTags(),
+                        element.hasUrls(),
+                        element.hashCode(),
+                        element.isFavorited(),
+                        element.isRetweeted(),
+                        element.isRetweet(),
+                        element.getRetweetCount(),
+                        profile.getScreenName(),//.getName(), //
+                        query,
+                        element.getEntities().getUrls(),
+                        element.getEntities().getHashTags(),
+                        element.getEntities().getMentions(),
+                        element.getEntities().getMedia(),
+                        element.getEntities().getTickerSymbols()
+                );
+                tweetDataList.add(tweetData); 
+            }    
+        }   
+        catch(Exception e){
+            System.out.println("TwitterCollector: "+e);
+            return null;
+        }
+        return tweetDataList;
     }
     
-   public void retrieveTweet(String hashtag, String lat, String lng, int radius, String query){
-    try{
-    mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
-    mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
-    Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
-
-    TwitterProfile profile = twitter.userOperations().getUserProfile();
-    
-    String profileId = twitter.userOperations().getScreenName();
-
-    System.out.println("Name: " + profile.getName()+ "Screen Name: "+profile.getScreenName());
-    
-    System.out.println("" + profile.getProfileUrl());
-
-    //SearchResults results = twitter.searchOperations().search(profileId, 0);
-
-
-    /*SearchResults results = twitter.searchOperations().search("#HIMYM", 25);
-    List<Tweet> tweetList = results.getTweets();
-    for (Tweet element : tweetList) {
-        System.out.println("\tRT:"+element.isRetweet()+"|From:"+element.getFromUser()+"|Date:"+element.getCreatedAt()+" |Tweet: "+element.getText());
-    }*/
-    String tweetID = "760118695037403136";//need to populate data since it's only a week old
-    SearchResults resultsAdv = twitter.searchOperations().search(new SearchParameters(hashtag)
-    .geoCode(new GeoCode(Double.parseDouble(lat), Double.parseDouble(lng), radius, GeoCode.Unit.KILOMETER))
-    //.lang("af")
-    //.resultType(SearchParameters.ResultType.MIXED)//mixed recent popular
-    .count(35)//max 100,default 15
-    //.until(untilDate)
-    .includeEntities(true)//media, urls, user mentions, hashtags, symbols
-    //.maxId(Long.parseLong(tweetID))
-    //.sinceId(Long.parseLong(tweetID))
-    );
-
-    System.out.println("\n--------------\n");
-    List<Tweet> tweetListAdv = resultsAdv.getTweets();
-    for (Tweet element : tweetListAdv) {
-
-        TweetData tweetData = new TweetData(
-                element.getId(),
-                profile.getName(),
-                element.getFromUser(),
-                element.getFromUserId(),
-                element.getInReplyToStatusId(),
-                element.getInReplyToUserId(),
-                element.getUser(),
-                element.getCreatedAt(),
-                element.getLanguageCode(),
-                element.getText(),
-                element.getInReplyToScreenName(),
-                element.getProfileImageUrl(),
-                element.getSource(),
-                element.getUnmodifiedText(),
-              //  element.getEntities(),
-                element.getFavoriteCount(),
-                element.hasMedia(),
-                element.hasMentions(),
-                element.hasTags(),
-                element.hasUrls(),
-                element.hashCode(),
-                element.isFavorited(),
-                element.isRetweeted(),
-                element.isRetweet(),
-                element.getRetweetCount(),
-                profile.getScreenName(),//.getName(), //
-                query,
-                element.getEntities().getUrls(),
-                element.getEntities().getHashTags(),
-                element.getEntities().getMentions(),
-                element.getEntities().getMedia(),
-                element.getEntities().getTickerSymbols()
-        );
-
-    // save
-    mongoOperation.save(tweetData);
-    
-//        System.out.println("\t"
-//                +"|ID:"     +element.getIdStr()
-//               /* +"|"        +element.getId()
-//                +"|"        +element.getExtraData()
-//                +"|From:"   +element.getFromUser()
-//                +"|"        +element.getFromUserId()
-//                +"|"        +element.getInReplyToStatusId()
-//                +"|"        +element.getInReplyToUserId()
-//                +"|"        +element.getUser()
-//                +"|Date:"   +element.getCreatedAt()
-//                +"|Lang:"   +element.getLanguageCode()
-//                +"|Tweet:"  +element.getText()
-//                +"|"        +element.getInReplyToScreenName()
-//                +"|"        +element.getProfileImageUrl()
-//                +"|"        +element.getSource()*/
-//                +"|UT"      +element.getUnmodifiedText()
-//               /* +"|"        +element.getEntities()
-//                +"|"        +element.getFavoriteCount()*/
-//                +"|"        +element.hasMedia()
-//                +"|"        +element.hasMentions()
-//                +"|"        +element.hasTags()
-//                +"|"        +element.hasUrls()
-//                +"|"        +element.hashCode()
-//                +"|"        +element.isFavorited()
-//                +"|"        +element.isRetweeted()  
-//                +"RT:"      +element.isRetweet()
-//                +"|"        +element.getRetweetCount()
-//        );
-   }
-    
-   }
-   
-    catch(Exception e){
-        System.out.println("TwitterCollector: "+e);
-    }
+   private void saveTweet(TweetData tweetData){
+        try{    
+            mongoOperation.save(tweetData);    
+        }
+        catch(Exception e){
+            System.out.println("TwitterCollector: "+e);
+        }
    }
 }

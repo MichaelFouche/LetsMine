@@ -16,6 +16,7 @@ import com.mycompany.letsmine.model.AnalyticsData;
 import com.mycompany.letsmine.model.QueryValues.QueryValues;
 import com.mycompany.letsmine.model.User;
 import com.mycompany.letsmine.service.AnalyticsTagCloudService;
+import com.mycompany.letsmine.service.LocationService;
 import com.mycompany.letsmine.service.ReportService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -329,36 +330,9 @@ public class DataController {
     }
     
     public String[] getLocationLatLong(String address){
-        String lat = "";
-        String lng = "";
-        
-        String[] latlng = new String[2];
-        try
-        {
-            GoogleResponse res = new AddressConverter().convertToLatLong("Paarl, South Africa");
-            if(res.getStatus().equals("OK"))
-            {
-                 for(Result result : res.getResults())
-                 {
-                     lat = result.getGeometry().getLocation().getLat();
-                     lng = result.getGeometry().getLocation().getLng();
-                     latlng[0] = lat;
-                     latlng[1] = lng;
-         //            System.out.println("Lattitude of address is :"  +lat);
-         //            System.out.println("Longitude of address is :" + lng);
-         //            System.out.println("Location is " + result.getGeometry().getLocation_type());
-                 }
-            }
-            else
-            {
-                 System.out.println(res.getStatus());
-            }
-        }
-        catch(Exception e)
-        {
-            System.out.println("ERROR: Retrieving location servlet: "+e);
-        }
-        return latlng;
+        context = new ClassPathXmlApplicationContext("beans.xml");
+        LocationService locationService = (LocationService)context.getBean("LocationService");
+        return locationService.getLocationLatLong(address);
     }
     private String getLoggedInUser(){
         user =  (User)context.getBean("User");
