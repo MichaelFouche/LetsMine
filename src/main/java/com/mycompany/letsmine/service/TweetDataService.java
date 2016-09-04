@@ -17,5 +17,5 @@ public interface TweetDataService {
     public List<TweetData> getAllTweets();
     public List findByField(String key);
     public List findByQuery(String field, DBObject dbObject, String collection);
-    
+    public boolean saveTweet(TweetData tweetdata);
 }

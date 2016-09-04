@@ -8,10 +8,12 @@ package com.mycompany.letsmine;
 import com.mycompany.letsmine.config.SpringMongoConfig;
 import com.mycompany.letsmine.model.TweetData;
 import com.mycompany.letsmine.model.User;
+import com.mycompany.letsmine.service.TweetDataService;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.social.twitter.api.GeoCode;
 import org.springframework.social.twitter.api.SearchParameters;
@@ -35,6 +37,8 @@ public class TwitterCollector {
     private Twitter twitter;
     ApplicationContext mongoContext;
     MongoOperations mongoOperation;
+    private TweetDataService tweetDataService;
+    private ApplicationContext context;
     
 
     public TwitterCollector() {
@@ -188,12 +192,15 @@ public class TwitterCollector {
         return tweetDataList;
     }
     
-   private void saveTweet(TweetData tweetData){
+   private boolean saveTweet(TweetData tweetData){
         try{    
-            mongoOperation.save(tweetData);    
+            context = new ClassPathXmlApplicationContext("beans.xml");         
+            tweetDataService =  (TweetDataService)context.getBean("TweetDataService");           
+            return  tweetDataService.saveTweet (tweetData);
         }
         catch(Exception e){
             System.out.println("TwitterCollector: "+e);
+            return false;
         }
    }
 }

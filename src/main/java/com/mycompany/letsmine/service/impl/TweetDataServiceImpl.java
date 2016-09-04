@@ -49,6 +49,18 @@ public class TweetDataServiceImpl implements TweetDataService{
         tweetData = mongoOperation.findAll(TweetData.class);
         return tweetData;
     }
+    
+    public boolean saveTweet(TweetData tweetData){
+        try{
+            ApplicationContext mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+            MongoOperations mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
+            mongoOperation.save(tweetData);  
+            return true;
+        }
+        catch(Exception e){
+            return false;
+        }
+    }
 
     
     @Override
