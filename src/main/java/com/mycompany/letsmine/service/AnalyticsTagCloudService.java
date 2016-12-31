@@ -21,6 +21,6 @@ public interface AnalyticsTagCloudService {
     public String conductTagCloudAnalytics(String query, String user);
     public AnalyticsData doTagCloudAnalytics(List<TweetData> tweetData, String query, String user);
     public void displayResultsInConsole(AnalyticsData analyticsData);
-    public void saveResult(AnalyticsData analyticsData);
+    public boolean saveResult(AnalyticsData analyticsData);
     public List<TweetData> getQueryTweets(String query);
 }
