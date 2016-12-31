@@ -17,6 +17,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -32,6 +34,7 @@ import org.springframework.social.twitter.api.UrlEntity;
  *
  * @author michaelfouche
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TweetDataServiceTest {
     
     public TweetDataServiceTest() {
@@ -68,7 +71,7 @@ public class TweetDataServiceTest {
     // The methods must be annotated with annotation @Test. For example:
     //
      @Test
-     public void hello() {
+     public void test0hello() {
          
          
          assertTrue(true);
@@ -76,7 +79,7 @@ public class TweetDataServiceTest {
      }
      
      @Test
-    public void writeToDatabase(){
+    public void test1WriteToDatabase(){
         //Given
         int[] indices = {1,1};
         Date date = new Date();
@@ -110,7 +113,7 @@ public class TweetDataServiceTest {
     }
     
     @Test
-    public void readFromDatabase(){        
+    public void test2ReadFromDatabase(){        
         //Given
         DBObject dbObject = new BasicDBObject();
         String queryFieldName = "searchQuery";
@@ -125,7 +128,7 @@ public class TweetDataServiceTest {
     }
     
     @Test
-    public void deleteFromDatabase(){
+    public void test3DeleteFromDatabase(){
         //Given
         Query query = new Query();
         query.addCriteria(Criteria.where("letsMineUser").is(letsMineUser).and("searchQuery").is(testSearchQuery));
