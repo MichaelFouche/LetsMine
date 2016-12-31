@@ -83,8 +83,15 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
         }
     }
     
-    public void saveResult(AnalyticsData analyticsData){
-        mongoOperation.save(analyticsData);
+    public boolean saveResult(AnalyticsData analyticsData){
+        try{
+            mongoOperation.save(analyticsData);
+            return true;
+        }
+        catch(Exception e){
+            return false;
+        }
+        
     }
         
     
