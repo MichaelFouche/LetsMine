@@ -19,6 +19,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.social.twitter.api.HashTagEntity;
 import org.springframework.social.twitter.api.MediaEntity;
 import org.springframework.social.twitter.api.MentionEntity;
@@ -108,12 +110,12 @@ public class TweetDataServiceTest {
         //Given
         DBObject dbObject = new BasicDBObject();
         String letsMineUser = "testUser";
-        String query = "searchQuery";
+        String queryFieldName = "searchQuery";
         String collection = "tweetdata";
         
         //When
         dbObject.put("letsMineUser",letsMineUser);        
-        List bySearchQuery = tweetDataService.findByQuery(query,dbObject, collection);
+        List bySearchQuery = tweetDataService.findByQuery(queryFieldName,dbObject, collection);
         //Then
         assertTrue(bySearchQuery.contains("TestSearchQuery"));
         
@@ -121,6 +123,13 @@ public class TweetDataServiceTest {
     
     @Test
     public void deleteFromDatabase(){
-        //Delete tweet using query and user
+        //Given
+        Query query = new Query();
+        query.addCriteria(Criteria.where("letsMineUser").is("testUser").and("searchQuery").is("TestSearchQuery"));
+        String collectionName = "tweetdata";
+        //When
+        boolean result = tweetDataService.deleteUserQuery(query, collectionName);
+        //Then
+        assertTrue(result);
     }
 }

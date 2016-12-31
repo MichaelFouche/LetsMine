@@ -7,8 +7,8 @@ package com.mycompany.letsmine.service;
 
 import com.mycompany.letsmine.model.TweetData;
 import java.util.List;
-import org.springframework.stereotype.Service;
 import com.mongodb.DBObject;
+import org.springframework.data.mongodb.core.query.Query;
 /**
  *
  * @author michaelfouche
@@ -18,5 +18,5 @@ public interface TweetDataService {
     public List findByField(String key);
     public List findByQuery(String field, DBObject dbObject, String collection);
     public boolean saveTweet(TweetData tweetdata);
-    public boolean deleteUserQuery(String user, String query);
+    public boolean deleteUserQuery(Query query, String collectionName);
 }

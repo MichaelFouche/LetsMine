@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Query;
 
 /**
  *
@@ -62,9 +63,19 @@ public class TweetDataServiceImpl implements TweetDataService{
         }
     }
     
-    public boolean deleteUserQuery(String user, String query){
+    public boolean deleteUserQuery(Query query, String collectionName){
+        ApplicationContext mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+        MongoOperations mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
+        try{
+            List<TweetData> resultList = mongoOperation.findAllAndRemove(query,TweetData.class,collectionName);
+            return true;
+        }
+        catch(Exception e){
+            System.out.println("Failed to remove items: "+e);
+            return false;
+        }
+            
         
-        return false;
     }
 
     
