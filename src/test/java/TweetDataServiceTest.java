@@ -39,6 +39,8 @@ public class TweetDataServiceTest {
     
     private ApplicationContext context;
     private TweetDataService tweetDataService; 
+    String letsMineUser;
+    String testSearchQuery;
     
     @BeforeClass
     public static void setUpClass() {
@@ -53,6 +55,8 @@ public class TweetDataServiceTest {
     public void setUp() {
         context = new ClassPathXmlApplicationContext("beans.xml");
         tweetDataService =  (TweetDataService)context.getBean("TweetDataService");
+        letsMineUser = "testUser";
+        testSearchQuery = "TestSearchQuery";
     }
     
     @After
@@ -96,7 +100,7 @@ public class TweetDataServiceTest {
         List<TickerSymbolEntity> tickerSymbolEntityList = new LinkedList<>();
         tickerSymbolEntityList.add(tickerSymbolEntity);
         
-        TweetData tweetData = new TweetData(123L, "testUser", "testUser", 0L, 0L, 0L, new TwitterProfile(0L, "", "", "", "", "", "", date), date, "", "Test2", "Screenname", "ProfileImageUrl", "Source", "UnmodifiedText"/*, Entities entities*/, 0, false, false, true, false, 0, false, false, false, 0,"testUser", "TestSearchQuery", urlEntityList , hashTagEntityList ,mentionEntityList, mediaEntityList, tickerSymbolEntityList);
+        TweetData tweetData = new TweetData(123L, "testUser", "testUser", 0L, 0L, 0L, new TwitterProfile(0L, "", "", "", "", "", "", date), date, "", "Test2", "Screenname", "ProfileImageUrl", "Source", "UnmodifiedText"/*, Entities entities*/, 0, false, false, true, false, 0, false, false, false, 0,letsMineUser, testSearchQuery, urlEntityList , hashTagEntityList ,mentionEntityList, mediaEntityList, tickerSymbolEntityList);
         
         //When
         boolean result = tweetDataService.saveTweet(tweetData);
@@ -109,7 +113,6 @@ public class TweetDataServiceTest {
     public void readFromDatabase(){        
         //Given
         DBObject dbObject = new BasicDBObject();
-        String letsMineUser = "testUser";
         String queryFieldName = "searchQuery";
         String collection = "tweetdata";
         
@@ -117,7 +120,7 @@ public class TweetDataServiceTest {
         dbObject.put("letsMineUser",letsMineUser);        
         List bySearchQuery = tweetDataService.findByQuery(queryFieldName,dbObject, collection);
         //Then
-        assertTrue(bySearchQuery.contains("TestSearchQuery"));
+        assertTrue(bySearchQuery.contains(testSearchQuery));
         
     }
     
@@ -125,7 +128,7 @@ public class TweetDataServiceTest {
     public void deleteFromDatabase(){
         //Given
         Query query = new Query();
-        query.addCriteria(Criteria.where("letsMineUser").is("testUser").and("searchQuery").is("TestSearchQuery"));
+        query.addCriteria(Criteria.where("letsMineUser").is(letsMineUser).and("searchQuery").is(testSearchQuery));
         String collectionName = "tweetdata";
         //When
         boolean result = tweetDataService.deleteUserQuery(query, collectionName);
