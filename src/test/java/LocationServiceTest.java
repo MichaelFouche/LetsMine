@@ -59,7 +59,7 @@ public class LocationServiceTest {
         String[] latlngResult = new String[2];
         latlngResult = locationService.getLocationLatLong(address);   
         
-        String latExpected = "-33.7342304";
+        String latExpected = "-33.924741";
         
         assertEquals(latExpected, latlngResult[0]);
      }
@@ -72,7 +72,7 @@ public class LocationServiceTest {
         String[] latlngResult = new String[2];
         latlngResult = locationService.getLocationLatLong(address);   
         
-        String lngExpected = "18.9621091";
+        String lngExpected = "18.4241074";
         
          assertEquals(lngExpected, latlngResult[1]);
      }

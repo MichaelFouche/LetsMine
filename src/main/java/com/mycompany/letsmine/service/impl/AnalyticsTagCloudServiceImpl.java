@@ -29,95 +29,84 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
 
     private ApplicationContext mongoContext;
     private MongoOperations mongoOperation;
-    private User mongoUser;
-    private HashMap<String, Integer> tagCloudHashMap;
-    private AnalyticsData analyticsData;    
-    private ApplicationContext context;
-//    analyticsData.
-  //  private static final String COLLECTION = "tweetdata"; 
+    //private AnalyticsData analyticsData;    
     
      public AnalyticsTagCloudServiceImpl() {         
          //hibernate        
     }
-     /*
-        context = new ClassPathXmlApplicationContext("beans.xml");       
-        mongoUser = (User)context.getBean("MongoUser");
-       */ 
-        
-        
-        
-    
-    @Override
-    public String conductTagCloudAnalytics(String query, String user) {
-        String returnMessage = "";
-        Integer value;
+     
+    public List<TweetData> getQueryTweets(String query){
         mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
         mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");  
+        
+        return findByQuery(query); 
+    }    
+     
+    public AnalyticsData doTagCloudAnalytics(List<TweetData> tweetData, String query, String user){
         ApplicationContext contextApp = new ClassPathXmlApplicationContext("beans.xml");
-        analyticsData =  (AnalyticsData)contextApp.getBean("AnalyticsData");
+        AnalyticsData analyticsData =  (AnalyticsData)contextApp.getBean("AnalyticsData");
         analyticsData.setTagCloudHashMap(new HashMap<String, Integer>());
-//        try{
-           //retrieve relevant data/tweetData objects
-            String field = "tags";
-            // DBObject dbObject = new BasicDBObject();
-            // dbObject.put("searchQuery",query);
-            // DBCursor dBCursor = findByQuery(dbObject);
-            //  List<TweetData> tweetData =  dBCursor;
-            List<TweetData> tweetData = findByQuery(query);
-            //loop through them and do calculations            
-            for(TweetData item:tweetData){
-                if(item.getSearchQuery().equals(query)&& item.getLetsMineUser().equals(user))
-                {
-                    //test whether the right amount of tweets coming through
-                    //System.out.println(item.getLetsMineUser()+"QUERY "+item.getSearchQuery()+ "TEXT"+item.getText());
-                    List<HashTagEntity> theHashtagList = item.getTags();                        
-                    for(HashTagEntity i:theHashtagList)
-                    {
-                        String hashTagValue = i.getText();
+        Integer aMentionCount;  
+        for(TweetData item:tweetData){
+            if(item.getSearchQuery().equals(query)&& item.getLetsMineUser().equals(user))
+            {//We have an item from this query which should be analysed                                      
+                //System.out.println(item.getLetsMineUser()+"QUERY "+item.getSearchQuery()+ "TEXT"+item.getText());
+                List<HashTagEntity> theHashtagList = item.getTags();                     
+                for(HashTagEntity aMention:theHashtagList)
+                {//loop through all the hashtags for that tweet
+                    String aMentionText = aMention.getText();
 
-                        value = 0;
-                        
-                        if(!analyticsData.getTagCloudHashMap().isEmpty())
-                        {
-                            System.out.println("InFOR");
-                            if(analyticsData.getTagCloudHashMap().containsKey(hashTagValue)){//containskey
-                                value = analyticsData.getTagCloudHashMap().get(hashTagValue);
-                                System.out.println("value:"+value);
-                                System.out.println(""+value);
-                            }
+                    aMentionCount = 0;
+
+                    if(!analyticsData.getTagCloudHashMap().isEmpty())
+                    {//If there is data in the list already
+                        System.out.println("InFOR"+aMentionText);
+                        if(analyticsData.getTagCloudHashMap().containsKey(aMentionText))
+                        {//containskey... aka we need to +1 instead of just put in map
+                            aMentionCount = analyticsData.getTagCloudHashMap().get(aMentionText);
+                            System.out.println("value:"+aMentionCount);
                         }
-
-                        value +=1;
-
-                        //not put, but set
-                        analyticsData.getTagCloudHashMap().put(i.getText(), value);
                     }
+                    aMentionCount +=1;
+                    analyticsData.getTagCloudHashMap().put(aMentionText, aMentionCount);
                 }
             }
-            
-            
-            System.out.println("Loop over hashmap");
-            Iterator<String> keySetIterator = analyticsData.getTagCloudHashMap().keySet().iterator(); 
-            while(keySetIterator.hasNext()){ 
-                String key = keySetIterator.next(); 
-                System.out.println("key:" + key + "|:" + analyticsData.getTagCloudHashMap().get(key)); 
-            }
-
-            
+        }
+        return analyticsData;
+    }
+    public void displayResultsInConsole(AnalyticsData analyticsData){
+        System.out.println("Loop over hashmap");
+        Iterator<String> keySetIterator = analyticsData.getTagCloudHashMap().keySet().iterator(); 
+        while(keySetIterator.hasNext()){ 
+            String key = keySetIterator.next(); 
+            System.out.println("key:" + key + "|:" + analyticsData.getTagCloudHashMap().get(key)); 
+        }
+    }
+    
+    public void saveResult(AnalyticsData analyticsData){
+        mongoOperation.save(analyticsData);
+    }
+        
+    
+    public String conductTagCloudAnalytics(String query, String user) {
+        try{   
+            AnalyticsData analyticsData;
+            List<TweetData> tweetData = getQueryTweets(query);
+            analyticsData = doTagCloudAnalytics(tweetData, query, user); 
+            displayResultsInConsole(analyticsData); 
             //store into new collection (mongo)
             analyticsData.setUser(user);
             analyticsData.setQuery(query);
-            mongoOperation.save(analyticsData);
-            
+            saveResult(analyticsData);
+            return "true";
+        }
+        catch(Exception e)
+        {
+            return "Analytics failed: "+e;
+        }
+        
 
-            //report take it from there.
-            returnMessage = "true";
- //       }
-//        catch(Exception e){
-//            returnMessage = ""+e;
-//        }   
-
-        return returnMessage;
+       
             
     }
     
@@ -125,8 +114,7 @@ public class AnalyticsTagCloudServiceImpl implements AnalyticsTagCloudService{
     public List<TweetData> findByQuery(String query) {
         Query createQuery = new Query();
         createQuery.addCriteria(Criteria.where("searchQuery").in(query));
-       List<TweetData> tweetData = mongoOperation.find(createQuery, TweetData.class);
-        //System.out.println("findByQuery return size"+tweetData.size());
+        List<TweetData> tweetData = mongoOperation.find(createQuery, TweetData.class);
         return tweetData;
     }
 

@@ -31,8 +31,7 @@ public class ReportServiceImpl implements ReportService{
             dbObject.put("query",query);
         //loggedinuser and query
             
-        List<HashMap<String, Integer>>  analyticsData = mongoOperation.getCollection("AnalyticsData").distinct("tagCloudHashMap", dbObject);
-        System.out.println(""+analyticsData);
+        List<HashMap<String, Integer>>  analyticsData = (mongoOperation.getCollection("AnalyticsData").distinct("tagCloudHashMap", dbObject));
         HashMap<String, Integer> tagCloudHashMap = analyticsData.get(0);
         return tagCloudHashMap;
     }

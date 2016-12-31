@@ -25,7 +25,7 @@ public class LocationServiceImpl implements LocationService{
             String[] latlng = new String[2];
             try
             {
-                GoogleResponse res = new AddressConverter().convertToLatLong("Paarl, South Africa");
+                GoogleResponse res = new AddressConverter().convertToLatLong(address);
                 if(res.getStatus().equals("OK"))
                 {
                      for(Result result : res.getResults())

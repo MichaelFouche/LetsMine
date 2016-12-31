@@ -109,7 +109,7 @@ public class TwitterCollector {
          }
      }
     
-    public ArrayList<TweetData> retrieveTweetFromTwitter(String hashtag, String lat, String lng, int radius, String query){
+   public ArrayList<TweetData> retrieveTweetFromTwitter(String hashtag, String lat, String lng, int radius, String query){
         ArrayList<TweetData> tweetDataList = new ArrayList();
         try{
             mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);

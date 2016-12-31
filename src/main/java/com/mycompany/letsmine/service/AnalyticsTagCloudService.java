@@ -7,6 +7,7 @@ package com.mycompany.letsmine.service;
 
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mycompany.letsmine.model.AnalyticsData;
 import com.mycompany.letsmine.model.TweetData;
 import java.util.List;
 
@@ -18,4 +19,8 @@ public interface AnalyticsTagCloudService {
     public List findByField(String key);
     public List<TweetData> findByQuery(String query);
     public String conductTagCloudAnalytics(String query, String user);
+    public AnalyticsData doTagCloudAnalytics(List<TweetData> tweetData, String query, String user);
+    public void displayResultsInConsole(AnalyticsData analyticsData);
+    public void saveResult(AnalyticsData analyticsData);
+    public List<TweetData> getQueryTweets(String query);
 }

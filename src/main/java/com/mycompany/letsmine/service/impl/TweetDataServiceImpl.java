@@ -29,8 +29,7 @@ public class TweetDataServiceImpl implements TweetDataService{
 //    private User mongoUser;    
 //    private ApplicationContext context;
      
-    private static final String COLLECTION = "tweetdata";   
-    
+    private static final String COLLECTION = "tweetdata";      
     
     @Override
     public List<TweetData> getAllTweets() {
@@ -55,6 +54,7 @@ public class TweetDataServiceImpl implements TweetDataService{
             ApplicationContext mongoContext = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
             MongoOperations mongoOperation = (MongoOperations)mongoContext.getBean("mongoTemplate");
             mongoOperation.save(tweetData);  
+            
             return true;
         }
         catch(Exception e){

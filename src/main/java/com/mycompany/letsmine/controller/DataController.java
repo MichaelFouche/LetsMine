@@ -65,8 +65,6 @@ public class DataController {
     private void retrieveValues(){
          context = new ClassPathXmlApplicationContext("beans.xml");
          twitterCollector =  (TwitterCollector) context.getBean("TwitterCollector");
-         //
-         //
          tweetDataService =  (TweetDataService)context.getBean("TweetDataService");
         // 
          
@@ -334,6 +332,7 @@ public class DataController {
         LocationService locationService = (LocationService)context.getBean("LocationService");
         return locationService.getLocationLatLong(address);
     }
+    
     private String getLoggedInUser(){
         user =  (User)context.getBean("User");
         if((String)user.getUsername()== null){
@@ -349,7 +348,7 @@ public class DataController {
     }
     
     public QueryValues interpretQuery(String queryValue){
-        //keywords: DATAMINE, HASHTAG, FROM, 
+        //keywords: DATAMINE, HASHTAG, FROM, RADIUS
         String actionValue = "";
         String hashtagValue = "";
         String fromValue = "";

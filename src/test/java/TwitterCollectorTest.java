@@ -75,8 +75,7 @@ public class TwitterCollectorTest {
         String lng = "18.9621091";
         int radius = 5000;
         String query = "Test";
-        List<TweetData> tweetDataList = new ArrayList();
-        tweetDataList = twitterCollector.retrieveTweetFromTwitter(hashtag, lat, lng, radius, query);
+        List<TweetData> tweetDataList = twitterCollector.retrieveTweetFromTwitter(hashtag, lat, lng, radius, query);
         assertTrue(tweetDataList.size()>0);
         System.out.println("tweetDataList.size() "+ tweetDataList.size());
     }
