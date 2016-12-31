@@ -18,4 +18,5 @@ public interface TweetDataService {
     public List findByField(String key);
     public List findByQuery(String field, DBObject dbObject, String collection);
     public boolean saveTweet(TweetData tweetdata);
+    public boolean deleteUserQuery(String user, String query);
 }

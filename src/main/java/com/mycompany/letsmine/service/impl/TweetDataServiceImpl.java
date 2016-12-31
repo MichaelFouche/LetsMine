@@ -61,6 +61,11 @@ public class TweetDataServiceImpl implements TweetDataService{
             return false;
         }
     }
+    
+    public boolean deleteUserQuery(String user, String query){
+        
+        return false;
+    }
 
     
     @Override

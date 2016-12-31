@@ -8,11 +8,6 @@ package com.mycompany.letsmine.controller;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mycompany.letsmine.TwitterCollector;
-import com.mycompany.letsmine.config.SpringMongoConfig;
-import com.mycompany.letsmine.geoCode.AddressConverter;
-import com.mycompany.letsmine.geoCode.GoogleResponse;
-import com.mycompany.letsmine.geoCode.Result;
-import com.mycompany.letsmine.model.AnalyticsData;
 import com.mycompany.letsmine.model.QueryValues.QueryValues;
 import com.mycompany.letsmine.model.User;
 import com.mycompany.letsmine.service.AnalyticsTagCloudService;
@@ -26,9 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,7 +70,6 @@ public class DataController {
     public String getQueryView(Model model){ 
         model.addAttribute("headingHTML", headingHTML);
         error = "";
-        //doTweetCollector("Rio2016");
         String html = ""; 
         
         model.addAttribute("query_response", html);
